@@ -1,10 +1,11 @@
 import { APP_PREFIX } from '@settings/apply-app-setting';
 import request from 'supertest';
-import { apiSettings, app } from '../../jest.setup';
+import { apiSettings, app,  quizQuestionRepository } from '../../jest.setup';
 import {  HttpStatus } from '@nestjs/common';
 import { createAuthorizationHeader } from '../../utils/test-helpers';
 import { testSeeder } from '../../utils/test.seeder';
 import { dataSetNewQuestions1, errorDataSet1 } from './dataset';
+import { ID } from '../../mocks/mocks';
 
 
 describe(`Endpoint (POST) - /sa/quiz/questions`, () => {
@@ -60,3 +61,52 @@ describe(`Endpoint (POST) - /sa/quiz/questions`, () => {
 
 });
 
+describe(`Endpoint (DELETE) - /sa/quiz/questions`, () => {
+  it('Should delete question', async () => {
+
+    const newQuestion = testSeeder.createQuestionDto()
+
+
+    const question = quizQuestionRepository.create({
+      body: newQuestion.body,
+      correct_answers: JSON.stringify(newQuestion.correctAnswers) ,
+      published: false,
+      created_at: new Date(),
+      updated_at: new Date(),
+    });
+
+    const savedQuestion = await quizQuestionRepository.save(question);
+
+   await request(app.getHttpServer())
+      .delete(`${APP_PREFIX}/sa/quiz/questions/${savedQuestion.id}`)
+      .set(
+        createAuthorizationHeader(
+          apiSettings.ADMIN_AUTH_USERNAME,
+          apiSettings.ADMIN_AUTH_PASSWORD,
+        ),
+      )
+      .expect(HttpStatus.NO_CONTENT);
+
+  });
+
+
+  it(`Should get ${HttpStatus.BAD_REQUEST} `, async () => {
+
+    await request(app.getHttpServer())
+      .delete(`${APP_PREFIX}/sa/quiz/questions/${ID}`)
+      .set(
+        createAuthorizationHeader(
+          apiSettings.ADMIN_AUTH_USERNAME,
+          apiSettings.ADMIN_AUTH_PASSWORD,
+        ),
+      )
+      .expect(HttpStatus.NOT_FOUND);
+  });
+
+  it(`Should get ${HttpStatus.UNAUTHORIZED} `, async () => {
+    await request(app.getHttpServer())
+      .delete(`${APP_PREFIX}/sa/quiz/questions/${ID}`)
+      .expect(HttpStatus.UNAUTHORIZED);
+  });
+
+});

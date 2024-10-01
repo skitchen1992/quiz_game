@@ -8,15 +8,17 @@ import { QuizQuestionsQueryRepository } from '@features/quizQuestions/infrastruc
 import {
   CreateQuestionCommand,
   CreateQuestionHandler,
-} from '@features/quizQuestions/application/handlers/create-user.handler';
+} from '@features/quizQuestions/application/handlers/create-question.handler';
 import { GetQuestionHandler } from '@features/quizQuestions/application/handlers/get-question.handler';
+import { DeleteQuestionHandler } from '@features/quizQuestions/application/handlers/delete-question.handler';
 
 
 const quizQuestionsProviders: Provider[] = [
   QuizQuestionsRepository,
   QuizQuestionsQueryRepository,
   CreateQuestionHandler,
-  GetQuestionHandler
+  GetQuestionHandler,
+  DeleteQuestionHandler
 ];
 
 @Module({

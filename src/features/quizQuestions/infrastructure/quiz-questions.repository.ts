@@ -34,16 +34,17 @@ export class QuizQuestionsRepository {
     }
   }
 
-  // public async delete(userId: string): Promise<boolean> {
-  //   try {
-  //     const result = await this.userRepository.delete(userId);
-  //
-  //     return Boolean(result.affected);
-  //   } catch (e) {
-  //     console.error('Error during delete user operation:', e);
-  //     return false;
-  //   }
-  // }
+  public async delete(questionId: string): Promise<boolean> {
+    try {
+      const result = await this.quizQuestionRepository.delete(questionId);
+
+      return Boolean(result.affected);
+    } catch (error) {
+      console.error('Error during delete user operation:', { error });
+      throw new InternalServerErrorException('Could not delete question');
+
+    }
+  }
 
   // public async updatePassword(
   //   userId: string,
