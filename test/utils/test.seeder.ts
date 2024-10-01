@@ -9,6 +9,7 @@ import {
   LikeStatusEnum,
   ParentTypeEnum,
 } from '@features/likes/domain/likes.entity';
+import { CreateQuestionInputDto } from '@features/quizQuestions/api/dto/input/create-question.input.dto';
 
 export const testSeeder = {
   createUserDto(): NewUserDto {
@@ -132,5 +133,13 @@ export const testSeeder = {
         parentType,
       };
     });
+  },
+
+
+  createQuestionDto(): CreateQuestionInputDto {
+    return {
+      body: 'lg-99913123131231',
+      correctAnswers: ['1', '2', '3', '4'],
+    };
   },
 };
