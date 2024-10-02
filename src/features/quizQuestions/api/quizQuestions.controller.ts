@@ -7,7 +7,8 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  Post, Put,
+  Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -23,6 +24,8 @@ import { UpdatePostForBlogDto } from '@features/blogs/api/dto/input/update-post-
 import { UpdatePostCommand } from '@features/posts/application/handlers/update-post.handler';
 import { UpdateQuestionInputDto } from '@features/quizQuestions/api/dto/input/update-question.input.dto';
 import { UpdateQuestionCommand } from '@features/quizQuestions/application/handlers/update-question.handler';
+import { PublishQuestionInputDto } from '@features/quizQuestions/api/dto/input/publish-question.input.dto';
+import { PublishQuestionCommand } from '@features/quizQuestions/application/handlers/publish-question.handler';
 
 @SkipThrottle()
 @ApiTags('QuizQuestions')
@@ -77,4 +80,16 @@ export class QuizQuestionsController {
     );
   }
 
+  @Put(':id/publish')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async publish(
+    @Param('id') answerId: string,
+    @Body() input: PublishQuestionInputDto,
+  ) {
+    const { published } = input;
+
+    await this.commandBus.execute<PublishQuestionCommand, void>(
+      new PublishQuestionCommand(answerId, published),
+    );
+  }
 }

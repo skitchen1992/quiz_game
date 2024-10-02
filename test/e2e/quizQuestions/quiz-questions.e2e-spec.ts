@@ -7,6 +7,7 @@ import { testSeeder } from '../../utils/test.seeder';
 import {
   dataSetNewQuestions1,
   dataSetNewQuestions2,
+  dataSetNewQuestions3,
   errorDataSet1,
 } from './dataset';
 import { ID } from '../../mocks/mocks';
@@ -158,6 +159,64 @@ describe(`Endpoint (PUT) - /sa/quiz/questions`, () => {
   it(`Should get ${HttpStatus.UNAUTHORIZED} `, async () => {
     await request(app.getHttpServer())
       .put(`${APP_PREFIX}/sa/quiz/questions/${ID}`)
+      .expect(HttpStatus.UNAUTHORIZED);
+  });
+});
+
+describe(`Endpoint (PUT) - /sa/quiz/questions/:id/publish`, () => {
+  it('Should update question', async () => {
+    const newQuestion = testSeeder.createQuestionDto();
+
+    const question = quizQuestionRepository.create({
+      body: newQuestion.body,
+      correct_answers: JSON.stringify(newQuestion.correctAnswers),
+      published: false,
+      created_at: new Date(),
+      updated_at: new Date(),
+    });
+
+    const savedQuestion = await quizQuestionRepository.save(question);
+
+    await request(app.getHttpServer())
+      .put(`${APP_PREFIX}/sa/quiz/questions/${savedQuestion.id}/publish`)
+      .set(
+        createAuthorizationHeader(
+          apiSettings.ADMIN_AUTH_USERNAME,
+          apiSettings.ADMIN_AUTH_PASSWORD,
+        ),
+      )
+      .send(dataSetNewQuestions3)
+      .expect(HttpStatus.NO_CONTENT);
+  });
+
+  it(`Should get ${HttpStatus.NOT_FOUND} `, async () => {
+    await request(app.getHttpServer())
+      .put(`${APP_PREFIX}/sa/quiz/questions/${ID}/publish`)
+      .set(
+        createAuthorizationHeader(
+          apiSettings.ADMIN_AUTH_USERNAME,
+          apiSettings.ADMIN_AUTH_PASSWORD,
+        ),
+      )
+      .send(dataSetNewQuestions3)
+      .expect(HttpStatus.NOT_FOUND);
+  });
+
+  it(`Should get ${HttpStatus.BAD_REQUEST} `, async () => {
+    await request(app.getHttpServer())
+      .put(`${APP_PREFIX}/sa/quiz/questions/${ID}/publish`)
+      .set(
+        createAuthorizationHeader(
+          apiSettings.ADMIN_AUTH_USERNAME,
+          apiSettings.ADMIN_AUTH_PASSWORD,
+        ),
+      )
+      .expect(HttpStatus.BAD_REQUEST);
+  });
+
+  it(`Should get ${HttpStatus.UNAUTHORIZED} `, async () => {
+    await request(app.getHttpServer())
+      .put(`${APP_PREFIX}/sa/quiz/questions/${ID}/publish`)
       .expect(HttpStatus.UNAUTHORIZED);
   });
 });

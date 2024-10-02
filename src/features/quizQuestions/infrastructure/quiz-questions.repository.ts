@@ -58,4 +58,17 @@ export class QuizQuestionsRepository {
       throw new InternalServerErrorException('Could not update question');
     }
   }
+
+  public async publish(answerId: string, published: boolean): Promise<boolean> {
+    try {
+      const result = await this.quizQuestionRepository.update(answerId, {
+        published,
+      });
+
+      return Boolean(result.affected);
+    } catch (error) {
+      console.error('Error during publish answer operation:', { error });
+      throw new InternalServerErrorException('Could not publish question');
+    }
+  }
 }

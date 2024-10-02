@@ -16,3 +16,7 @@ export const dataSetNewQuestions2 = {
   body: 'body body body',
   correctAnswers: ['1', '2', '3', '4'].reverse(),
 };
+
+export const dataSetNewQuestions3 = {
+  published: true,
+};
