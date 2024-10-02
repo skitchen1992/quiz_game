@@ -7,7 +7,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  Post,
+  Post, Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -19,6 +19,10 @@ import { CreateQuestionCommand } from '@features/quizQuestions/application/handl
 import { GetQuestionQuery } from '@features/quizQuestions/application/handlers/get-question.handler';
 import { QuestionOutputDto } from '@features/quizQuestions/api/dto/output/question.output.dto';
 import { DeleteQuestionCommand } from '@features/quizQuestions/application/handlers/delete-question.handler';
+import { UpdatePostForBlogDto } from '@features/blogs/api/dto/input/update-post-for-blog.input.dto';
+import { UpdatePostCommand } from '@features/posts/application/handlers/update-post.handler';
+import { UpdateQuestionInputDto } from '@features/quizQuestions/api/dto/input/update-question.input.dto';
+import { UpdateQuestionCommand } from '@features/quizQuestions/application/handlers/update-question.handler';
 
 @SkipThrottle()
 @ApiTags('QuizQuestions')
@@ -59,4 +63,18 @@ export class QuizQuestionsController {
       new DeleteQuestionCommand(id),
     );
   }
+
+  @Put(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async update(
+    @Param('id') answerId: string,
+    @Body() input: UpdateQuestionInputDto,
+  ) {
+    const { body, correctAnswers } = input;
+
+    await this.commandBus.execute<UpdateQuestionCommand, void>(
+      new UpdateQuestionCommand(body, correctAnswers, answerId),
+    );
+  }
+
 }

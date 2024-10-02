@@ -11,21 +11,17 @@ export class QuizQuestionsRepository {
     private quizQuestionRepository: Repository<QuizQuestion>,
   ) {}
 
-
-  public async create(
-    newQuestion: CreateQuestionInputDto,
-  ): Promise<string> {
+  public async create(newQuestion: CreateQuestionInputDto): Promise<string> {
     try {
       const question = this.quizQuestionRepository.create({
         body: newQuestion.body,
-        correct_answers: JSON.stringify(newQuestion.correctAnswers) ,
+        correct_answers: JSON.stringify(newQuestion.correctAnswers),
         published: false,
         created_at: new Date(),
         updated_at: new Date(),
       });
 
       const savedQuestion = await this.quizQuestionRepository.save(question);
-
 
       return savedQuestion.id;
     } catch (error) {
@@ -42,24 +38,24 @@ export class QuizQuestionsRepository {
     } catch (error) {
       console.error('Error during delete user operation:', { error });
       throw new InternalServerErrorException('Could not delete question');
-
     }
   }
 
-  // public async updatePassword(
-  //   userId: string,
-  //   password: string,
-  // ): Promise<boolean> {
-  //   try {
-  //     const result = await this.userRepository.update(userId, { password });
-  //
-  //     return Boolean(result.affected);
-  //   } catch (e) {
-  //     console.error('Error during update user operation:', e);
-  //     return false;
-  //   }
-  // }
-  //
+  public async update(
+    answerId: string,
+    body: string,
+    correctAnswers: string[],
+  ): Promise<boolean> {
+    try {
+      const result = await this.quizQuestionRepository.update(answerId, {
+        body,
+        correct_answers: JSON.stringify(correctAnswers),
+      });
 
-
+      return Boolean(result.affected);
+    } catch (error) {
+      console.error('Error during update answer operation:', { error });
+      throw new InternalServerErrorException('Could not update question');
+    }
+  }
 }
