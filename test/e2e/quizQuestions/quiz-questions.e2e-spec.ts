@@ -11,6 +11,141 @@ import {
   errorDataSet1,
 } from './dataset';
 import { ID } from '../../mocks/mocks';
+import { QuestionOutputDtoMapper } from '@features/quizQuestions/api/dto/output/question.output.dto';
+
+describe(`Endpoint (GET) - /sa/quiz/questions`, () => {
+  it('Should get question with pagination', async () => {
+    const newQuestion = testSeeder.createQuestionDto();
+
+    const question1 = quizQuestionRepository.create({
+      body: newQuestion.body,
+      correct_answers: JSON.stringify(newQuestion.correctAnswers),
+      published: false,
+      created_at: new Date(),
+      updated_at: null,
+    });
+
+    const savedQuestion1 = await quizQuestionRepository.save(question1);
+
+    const question2 = quizQuestionRepository.create({
+      body: newQuestion.body,
+      correct_answers: JSON.stringify(newQuestion.correctAnswers),
+      published: true,
+      created_at: new Date(),
+      updated_at: null,
+    });
+
+    const savedQuestion2 = await quizQuestionRepository.save(question2);
+
+    const response = await request(app.getHttpServer())
+      .get(`${APP_PREFIX}/sa/quiz/questions`)
+      .set(
+        createAuthorizationHeader(
+          apiSettings.ADMIN_AUTH_USERNAME,
+          apiSettings.ADMIN_AUTH_PASSWORD,
+        ),
+      )
+      .expect(HttpStatus.OK);
+
+    expect(response.body).toEqual({
+      items: [savedQuestion2, savedQuestion1].map((question) =>
+        QuestionOutputDtoMapper(question),
+      ),
+      totalCount: 2,
+      pageSize: 10,
+      page: 1,
+      pagesCount: 1,
+    });
+  });
+
+  it('Should get question with pagination query ?publishedStatus=notPublished', async () => {
+    const newQuestion = testSeeder.createQuestionDto();
+
+    const question1 = quizQuestionRepository.create({
+      body: newQuestion.body,
+      correct_answers: JSON.stringify(newQuestion.correctAnswers),
+      published: false,
+      created_at: new Date(),
+      updated_at: null,
+    });
+
+    const savedQuestion1 = await quizQuestionRepository.save(question1);
+
+    const question2 = quizQuestionRepository.create({
+      body: newQuestion.body,
+      correct_answers: JSON.stringify(newQuestion.correctAnswers),
+      published: true,
+      created_at: new Date(),
+      updated_at: null,
+    });
+
+    const savedQuestion2 = await quizQuestionRepository.save(question2);
+
+    const response = await request(app.getHttpServer())
+      .get(`${APP_PREFIX}/sa/quiz/questions?publishedStatus=notPublished`)
+      .set(
+        createAuthorizationHeader(
+          apiSettings.ADMIN_AUTH_USERNAME,
+          apiSettings.ADMIN_AUTH_PASSWORD,
+        ),
+      )
+      .expect(HttpStatus.OK);
+
+    expect(response.body).toEqual({
+      items: [savedQuestion1].map((question) =>
+        QuestionOutputDtoMapper(question),
+      ),
+      totalCount: 1,
+      pageSize: 10,
+      page: 1,
+      pagesCount: 1,
+    });
+  });
+
+  it('Should get question with pagination query ?publishedStatus=notPublished', async () => {
+    const newQuestion = testSeeder.createQuestionDto();
+
+    const question1 = quizQuestionRepository.create({
+      body: newQuestion.body,
+      correct_answers: JSON.stringify(newQuestion.correctAnswers),
+      published: false,
+      created_at: new Date(),
+      updated_at: null,
+    });
+
+    const savedQuestion1 = await quizQuestionRepository.save(question1);
+
+    const question2 = quizQuestionRepository.create({
+      body: newQuestion.body,
+      correct_answers: JSON.stringify(newQuestion.correctAnswers),
+      published: true,
+      created_at: new Date(),
+      updated_at: null,
+    });
+
+    const savedQuestion2 = await quizQuestionRepository.save(question2);
+
+    const response = await request(app.getHttpServer())
+      .get(`${APP_PREFIX}/sa/quiz/questions?publishedStatus=published`)
+      .set(
+        createAuthorizationHeader(
+          apiSettings.ADMIN_AUTH_USERNAME,
+          apiSettings.ADMIN_AUTH_PASSWORD,
+        ),
+      )
+      .expect(HttpStatus.OK);
+
+    expect(response.body).toEqual({
+      items: [savedQuestion2].map((question) =>
+        QuestionOutputDtoMapper(question),
+      ),
+      totalCount: 1,
+      pageSize: 10,
+      page: 1,
+      pagesCount: 1,
+    });
+  });
+});
 
 describe(`Endpoint (POST) - /sa/quiz/questions`, () => {
   it('Should create question', async () => {
@@ -33,7 +168,7 @@ describe(`Endpoint (POST) - /sa/quiz/questions`, () => {
         id: expect.any(String),
         published: false,
         createdAt: expect.any(String),
-        updatedAt: expect.any(String),
+        updatedAt: null,
       }),
     );
   });

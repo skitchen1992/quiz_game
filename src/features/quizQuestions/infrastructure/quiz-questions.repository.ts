@@ -18,7 +18,7 @@ export class QuizQuestionsRepository {
         correct_answers: JSON.stringify(newQuestion.correctAnswers),
         published: false,
         created_at: new Date(),
-        updated_at: new Date(),
+        updated_at: null,
       });
 
       const savedQuestion = await this.quizQuestionRepository.save(question);
@@ -50,6 +50,7 @@ export class QuizQuestionsRepository {
       const result = await this.quizQuestionRepository.update(answerId, {
         body,
         correct_answers: JSON.stringify(correctAnswers),
+        updated_at: new Date(),
       });
 
       return Boolean(result.affected);
@@ -63,6 +64,7 @@ export class QuizQuestionsRepository {
     try {
       const result = await this.quizQuestionRepository.update(answerId, {
         published,
+        updated_at: new Date(),
       });
 
       return Boolean(result.affected);

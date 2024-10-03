@@ -11,7 +11,7 @@ export class TestingController {
   @Delete('all-data')
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete() {
-    const tables = ['users', 'blogs', 'posts'];
+    const tables = ['users', 'blogs', 'posts', 'quiz_questions'];
 
     for (const table of tables) {
       await this.dataSource.query(

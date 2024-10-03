@@ -10,6 +10,7 @@ import { GetQuestionHandler } from '@features/quizQuestions/application/handlers
 import { DeleteQuestionHandler } from '@features/quizQuestions/application/handlers/delete-question.handler';
 import { UpdateQuestionHandler } from '@features/quizQuestions/application/handlers/update-question.handler';
 import { PublishQuestionHandler } from '@features/quizQuestions/application/handlers/publish-question.handler';
+import { GetAllQuestionsHandler } from '@features/quizQuestions/application/handlers/get-all-questions.handler';
 
 const quizQuestionsProviders: Provider[] = [
   QuizQuestionsRepository,
@@ -19,6 +20,7 @@ const quizQuestionsProviders: Provider[] = [
   DeleteQuestionHandler,
   UpdateQuestionHandler,
   PublishQuestionHandler,
+  GetAllQuestionsHandler,
 ];
 
 @Module({

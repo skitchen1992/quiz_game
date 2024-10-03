@@ -26,6 +26,9 @@ import { UpdateQuestionInputDto } from '@features/quizQuestions/api/dto/input/up
 import { UpdateQuestionCommand } from '@features/quizQuestions/application/handlers/update-question.handler';
 import { PublishQuestionInputDto } from '@features/quizQuestions/api/dto/input/publish-question.input.dto';
 import { PublishQuestionCommand } from '@features/quizQuestions/application/handlers/publish-question.handler';
+import { QuestionsQueryDto } from '@features/quizQuestions/api/dto/input/get-pagination-question.input.dto';
+import { QuestionsOutputPaginationDto } from '@features/quizQuestions/api/dto/output/get-pagination-question.output.dto';
+import { GetAllQuestionsQuery } from '@features/quizQuestions/application/handlers/get-all-questions.handler';
 
 @SkipThrottle()
 @ApiTags('QuizQuestions')
@@ -38,12 +41,13 @@ export class QuizQuestionsController {
     private readonly queryBus: QueryBus,
   ) {}
 
-  // @Get()
-  // async getAll(@Query() query: UsersQuery) {
-  //   return await this.queryBus.execute<GetAllUsersQuery, CommentOutputDto>(
-  //     new GetAllUsersQuery(query),
-  //   );
-  // }
+  @Get()
+  async getAll(@Query() query: QuestionsQueryDto) {
+    return await this.queryBus.execute<
+      GetAllQuestionsQuery,
+      QuestionsOutputPaginationDto
+    >(new GetAllQuestionsQuery(query));
+  }
 
   @Post()
   async create(@Body() input: CreateQuestionInputDto) {

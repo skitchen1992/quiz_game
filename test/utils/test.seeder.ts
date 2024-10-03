@@ -135,7 +135,6 @@ export const testSeeder = {
     });
   },
 
-
   createQuestionDto(): CreateQuestionInputDto {
     return {
       body: 'lg-99913123131231',

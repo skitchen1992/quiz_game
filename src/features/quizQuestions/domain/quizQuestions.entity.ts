@@ -1,4 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+} from 'typeorm';
 import { Length } from 'class-validator';
 
 @Entity('quiz_questions')
@@ -23,11 +28,10 @@ export class QuizQuestion {
   })
   created_at: Date;
 
-
   @CreateDateColumn({
     type: 'timestamptz',
-    nullable: false,
+    nullable: true,
     default: () => 'CURRENT_TIMESTAMP',
   })
-  updated_at: Date;
+  updated_at: Date | null;
 }

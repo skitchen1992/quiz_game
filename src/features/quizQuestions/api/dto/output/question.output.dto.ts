@@ -6,12 +6,14 @@ export class QuestionOutputDto {
   correctAnswers: string[];
   published: boolean;
   createdAt: string;
-  updatedAt: string;
+  updatedAt: string | null;
 }
 
 // MAPPERS
 
-export const QuestionOutputDtoMapper = (question: QuizQuestion): QuestionOutputDto => {
+export const QuestionOutputDtoMapper = (
+  question: QuizQuestion,
+): QuestionOutputDto => {
   const outputDto = new QuestionOutputDto();
 
   outputDto.id = question.id;
@@ -19,7 +21,9 @@ export const QuestionOutputDtoMapper = (question: QuizQuestion): QuestionOutputD
   outputDto.correctAnswers = JSON.parse(question.correct_answers);
   outputDto.published = question.published;
   outputDto.createdAt = question.created_at.toISOString();
-  outputDto.updatedAt = question.updated_at.toISOString();
+  outputDto.updatedAt = question.updated_at
+    ? question.updated_at.toISOString()
+    : question.updated_at;
 
   return outputDto;
 };
