@@ -79,7 +79,7 @@ describe(`Endpoint (GET) - /sa/quiz/questions`, () => {
       updated_at: null,
     });
 
-    const savedQuestion2 = await quizQuestionRepository.save(question2);
+    await quizQuestionRepository.save(question2);
 
     const response = await request(app.getHttpServer())
       .get(`${APP_PREFIX}/sa/quiz/questions?publishedStatus=notPublished`)

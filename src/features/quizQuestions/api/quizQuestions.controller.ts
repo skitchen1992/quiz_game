@@ -20,8 +20,6 @@ import { CreateQuestionCommand } from '@features/quizQuestions/application/handl
 import { GetQuestionQuery } from '@features/quizQuestions/application/handlers/get-question.handler';
 import { QuestionOutputDto } from '@features/quizQuestions/api/dto/output/question.output.dto';
 import { DeleteQuestionCommand } from '@features/quizQuestions/application/handlers/delete-question.handler';
-import { UpdatePostForBlogDto } from '@features/blogs/api/dto/input/update-post-for-blog.input.dto';
-import { UpdatePostCommand } from '@features/posts/application/handlers/update-post.handler';
 import { UpdateQuestionInputDto } from '@features/quizQuestions/api/dto/input/update-question.input.dto';
 import { UpdateQuestionCommand } from '@features/quizQuestions/application/handlers/update-question.handler';
 import { PublishQuestionInputDto } from '@features/quizQuestions/api/dto/input/publish-question.input.dto';
