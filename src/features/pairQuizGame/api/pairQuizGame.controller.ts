@@ -12,7 +12,6 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { BasicAuthGuard } from '@infrastructure/guards/basic-auth-guard.service';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { SkipThrottle } from '@nestjs/throttler';
 import { CreateQuestionInputDto } from '@features/quizQuestions/api/dto/input/create-question.input.dto';
