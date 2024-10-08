@@ -17,7 +17,7 @@ import { UpdateCommentCommand } from '@features/comments/application/handlers/up
 import { DeleteCommentCommand } from '@features/comments/application/handlers/delete-comment.handler';
 import { GetCommentQuery } from '@features/comments/application/handlers/get-comment.handler';
 import { CommentOutputDto } from '@features/comments/api/dto/output/comment.output.dto';
-import { JwtAuthGuard } from '@infrastructure/guards/bearer-auth-guard.service';
+import { BearerAuthGuard } from '@infrastructure/guards/bearer-auth-guard.service';
 import { LikeDto } from '@features/posts/api/dto/input/like.input.dto';
 import { Request } from 'express';
 import { LikeOperationCommand } from '@features/posts/application/handlers/like-operation.handler';
@@ -46,7 +46,7 @@ export class CommentsController {
   }
 
   @ApiSecurity('bearer')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(BearerAuthGuard)
   @Put(':commentId')
   @HttpCode(HttpStatus.NO_CONTENT)
   async update(
@@ -64,7 +64,7 @@ export class CommentsController {
   }
 
   @ApiSecurity('bearer')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(BearerAuthGuard)
   @Delete(':commentId')
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('commentId') commentId: string, @Req() request: Request) {
@@ -76,7 +76,7 @@ export class CommentsController {
   }
 
   @ApiSecurity('bearer')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(BearerAuthGuard)
   @Put(':commentId/like-status')
   @HttpCode(HttpStatus.NO_CONTENT)
   async likeOperation(
