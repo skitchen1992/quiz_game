@@ -10,10 +10,20 @@ import {
 import { User } from '@features/users/domain/user.entity';
 import { Answer } from '@features/pairQuizGame/domain/answer.entity';
 
+export enum GameStatus {
+  WIN = 'win',
+  LOSS = 'loss',
+  DRAW = 'draw',
+  IN_PROGRESS = 'in_progress',
+}
+
 @Entity({ name: 'player' })
 export class Player {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
+
+  @Column({ type: 'uuid', nullable: false })
+  user_id: string;
 
   @ManyToOne(() => User, (user) => user.player)
   @JoinColumn({ name: 'user_id' })
@@ -31,4 +41,11 @@ export class Player {
 
   @OneToMany(() => Answer, (answer) => answer.player)
   answers: Answer[];
+
+  @Column({
+    type: 'enum',
+    enum: GameStatus,
+    default: GameStatus.IN_PROGRESS,
+  })
+  status: GameStatus;
 }

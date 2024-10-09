@@ -42,9 +42,15 @@ export class Game {
   })
   updated_at: Date | null;
 
+  @Column({ type: 'uuid', nullable: false })
+  first_player_id: string;
+
   @OneToOne(() => Player, { nullable: false })
   @JoinColumn({ name: 'first_player_id' })
   first_player: Player;
+
+  @Column({ type: 'uuid', nullable: true })
+  second_player_id: string;
 
   @OneToOne(() => Player, { nullable: true })
   @JoinColumn({ name: 'second_player_id' })

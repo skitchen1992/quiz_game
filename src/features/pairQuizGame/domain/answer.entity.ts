@@ -32,9 +32,15 @@ export class Answer {
   })
   created_at: Date;
 
+  @Column({ type: 'uuid', nullable: false })
+  question_id: string;
+
   @ManyToOne(() => QuestionOfGame, { nullable: false })
   @JoinColumn({ name: 'question_id' })
   question: QuestionOfGame;
+
+  @Column({ type: 'uuid', nullable: false })
+  player_id: string;
 
   @ManyToOne(() => Player, (player) => player.answers, { nullable: false })
   @JoinColumn({ name: 'player_id' })
