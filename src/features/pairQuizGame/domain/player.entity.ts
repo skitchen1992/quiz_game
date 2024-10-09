@@ -8,7 +8,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '@features/users/domain/user.entity';
-import { Game } from '@features/pairQuizGame/domain/game.entity';
 import { Answer } from '@features/pairQuizGame/domain/answer.entity';
 
 @Entity({ name: 'player' })
