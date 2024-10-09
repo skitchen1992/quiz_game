@@ -2,11 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { GameStatus } from '@features/pairQuizGame/domain/game.entity';
 import { Player } from '@features/pairQuizGame/domain/player.entity';
+import { QuestionOfGame } from '@features/pairQuizGame/domain/question-of-game.entity';
 
 export enum AnswerStatus {
   CORRECT = 'Correct',
@@ -22,7 +23,7 @@ export class Answer {
     enum: AnswerStatus,
     nullable: false,
   })
-  status: GameStatus;
+  status: AnswerStatus;
 
   @CreateDateColumn({
     type: 'timestamptz',
@@ -31,9 +32,11 @@ export class Answer {
   })
   created_at: Date;
 
-  @Column({ type: 'uuid', nullable: false })
-  questionId: string;
+  @ManyToOne(() => QuestionOfGame, { nullable: false })
+  @JoinColumn({ name: 'question_id' })
+  question: QuestionOfGame;
 
-  @ManyToOne(() => Player, (player) => player.answers)
+  @ManyToOne(() => Player, (player) => player.answers, { nullable: false })
+  @JoinColumn({ name: 'player_id' })
   player: Player;
 }

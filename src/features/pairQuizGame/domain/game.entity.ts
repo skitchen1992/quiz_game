@@ -6,6 +6,7 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  JoinColumn,
 } from 'typeorm';
 import { Player } from '@features/pairQuizGame/domain/player.entity';
 import { QuestionOfGame } from '@features/pairQuizGame/domain/question-of-game.entity';
@@ -20,12 +21,6 @@ export enum GameStatus {
 export class Game {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
-
-  @Column({ type: 'uuid', nullable: false })
-  first_player_id: string;
-
-  @Column({ type: 'uuid', nullable: false })
-  second_player_id: string;
 
   @Column({
     type: 'enum',
@@ -47,10 +42,12 @@ export class Game {
   })
   updated_at: Date | null;
 
-  @OneToOne(() => Player)
+  @OneToOne(() => Player, { nullable: false })
+  @JoinColumn({ name: 'first_player_id' })
   first_player: Player;
 
-  @OneToOne(() => Player)
+  @OneToOne(() => Player, { nullable: true })
+  @JoinColumn({ name: 'second_player_id' })
   second_player: Player;
 
   @OneToMany(() => QuestionOfGame, (question) => question.question)

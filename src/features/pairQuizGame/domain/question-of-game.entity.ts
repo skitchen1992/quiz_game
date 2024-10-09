@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -13,18 +14,14 @@ export class QuestionOfGame {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @Column({ name: 'game_id', type: 'uuid', nullable: false })
-  game_id: string;
-
-  @Column({ name: 'question_id', type: 'uuid', nullable: false })
-  question_id: string;
-
   @Column({ name: 'order', type: 'int' })
   order: number;
 
   @OneToOne(() => QuizQuestion)
+  @JoinColumn({ name: 'question_id' })
   question: QuizQuestion;
 
-  @ManyToOne(() => Game, (game) => game.questions)
+  @ManyToOne(() => Game, (game) => game.questions, { nullable: false })
+  @JoinColumn({ name: 'game_id' })
   game: Game;
 }

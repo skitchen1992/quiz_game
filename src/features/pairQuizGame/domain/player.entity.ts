@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -16,10 +17,8 @@ export class Player {
   public id: string;
 
   @ManyToOne(() => User, (user) => user.player)
+  @JoinColumn({ name: 'user_id' })
   user: User;
-
-  @Column({ type: 'uuid', nullable: false })
-  user_id: boolean;
 
   @Column({ type: 'int', default: 0 })
   score: number;
@@ -30,9 +29,6 @@ export class Player {
     default: () => 'CURRENT_TIMESTAMP',
   })
   created_at: Date;
-
-  @ManyToOne(() => Game, (game) => game.id)
-  game: Game;
 
   @OneToMany(() => Answer, (answer) => answer.player)
   answers: Answer[];
