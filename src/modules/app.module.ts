@@ -20,6 +20,7 @@ import { SessionModule } from '@features/session/session.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { QuizQuestionsModule } from '@features/quizQuestions/quizQuestions.module';
+import { PairQuizModule } from '@features/pairQuizGame/pairQuizGame.module';
 
 @Module({
   // Регистрация модулей
@@ -115,7 +116,8 @@ import { QuizQuestionsModule } from '@features/quizQuestions/quizQuestions.modul
     SharedModule,
     SessionModule,
     TestingModule,
-    QuizQuestionsModule
+    QuizQuestionsModule,
+    PairQuizModule,
   ],
   // Регистрация провайдеров
   providers: [],

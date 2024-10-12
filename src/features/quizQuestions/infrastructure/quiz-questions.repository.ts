@@ -25,7 +25,9 @@ export class QuizQuestionsRepository {
 
       return savedQuestion.id;
     } catch (error) {
-      console.error('Error inserting question into database', { error });
+      console.error('Error inserting question into database', {
+        error: (error as Error).message,
+      });
       throw new InternalServerErrorException('Could not create question');
     }
   }
@@ -36,7 +38,9 @@ export class QuizQuestionsRepository {
 
       return Boolean(result.affected);
     } catch (error) {
-      console.error('Error during delete user operation:', { error });
+      console.error('Error during delete user operation', {
+        error: (error as Error).message,
+      });
       throw new InternalServerErrorException('Could not delete question');
     }
   }
@@ -55,7 +59,9 @@ export class QuizQuestionsRepository {
 
       return Boolean(result.affected);
     } catch (error) {
-      console.error('Error during update answer operation:', { error });
+      console.error('Error during update answer operation', {
+        error: (error as Error).message,
+      });
       throw new InternalServerErrorException('Could not update question');
     }
   }
@@ -69,8 +75,27 @@ export class QuizQuestionsRepository {
 
       return Boolean(result.affected);
     } catch (error) {
-      console.error('Error during publish answer operation:', { error });
+      console.error('Error during publish answer operation', {
+        error: (error as Error).message,
+      });
       throw new InternalServerErrorException('Could not publish question');
+    }
+  }
+
+  public async getRandomQuestions(limit: number): Promise<QuizQuestion[]> {
+    try {
+      return await this.quizQuestionRepository
+        .createQueryBuilder('question')
+        .orderBy('RANDOM()')
+        .limit(limit)
+        .getMany();
+    } catch (error) {
+      console.error('Error fetching random questions:', {
+        error: (error as Error).message,
+      });
+      throw new InternalServerErrorException(
+        'Could not fetch random questions',
+      );
     }
   }
 }

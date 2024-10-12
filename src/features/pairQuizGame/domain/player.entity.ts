@@ -10,7 +10,7 @@ import {
 import { User } from '@features/users/domain/user.entity';
 import { Answer } from '@features/pairQuizGame/domain/answer.entity';
 
-export enum GameStatus {
+export enum PlayerStatus {
   WIN = 'win',
   LOSS = 'loss',
   DRAW = 'draw',
@@ -44,8 +44,8 @@ export class Player {
 
   @Column({
     type: 'enum',
-    enum: GameStatus,
-    default: GameStatus.IN_PROGRESS,
+    enum: PlayerStatus,
+    default: PlayerStatus.IN_PROGRESS,
   })
-  status: GameStatus;
+  status: PlayerStatus;
 }
