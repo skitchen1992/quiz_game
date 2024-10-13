@@ -22,6 +22,7 @@ import {
 } from '@features/pairQuizGame/api/dto/output/connection.output.dto';
 import { ConnectToPendingGameCommand } from '@features/pairQuizGame/application/handlers/connect-to-panding-game.handler';
 import { CheckUserParticipationInGameCommand } from '@features/pairQuizGame/application/handlers/check-user-participation-in-game.handler';
+import { GetCurrentPairGameQuery } from '@features/pairQuizGame/application/handlers/get-current-pair-qame.handler';
 
 @SkipThrottle()
 @ApiTags('PairQuizGame')
@@ -74,5 +75,20 @@ export class PairQuizGameController {
       // Возвращает информацию о новой ожидающей игре
       return PendingGameDtoMapper(game, player);
     }
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @ApiSecurity('bearer')
+  @UseGuards(BearerAuthGuard)
+  @Post('my-current')
+  async currenGame(@Req() request: Request) {
+    const user = request.currentUser!;
+
+    const game = await this.queryBus.execute<GetCurrentPairGameQuery, Game>(
+      new GetCurrentPairGameQuery(user.id),
+    );
+
+    // Возвращает информацию об активной игре
+    return ActiveGameDtoMapper(game);
   }
 }

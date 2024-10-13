@@ -16,6 +16,7 @@ import { ConnectToPendingGameHandler } from '@features/pairQuizGame/application/
 import { CheckUserParticipationInGameHandler } from '@features/pairQuizGame/application/handlers/check-user-participation-in-game.handler';
 import { QuestionOfGameRepository } from '@features/pairQuizGame/infrastructure/question-of-game.repository';
 import { QuizQuestionsRepository } from '@features/quizQuestions/infrastructure/quiz-questions.repository';
+import { GetCurrentPairGameHandler } from '@features/pairQuizGame/application/handlers/get-current-pair-qame.handler';
 
 const handlers: Provider[] = [
   GetPendingGameHandler,
@@ -23,6 +24,7 @@ const handlers: Provider[] = [
   CreateGameHandler,
   ConnectToPendingGameHandler,
   CheckUserParticipationInGameHandler,
+  GetCurrentPairGameHandler,
 ];
 
 const repositories: Provider[] = [
