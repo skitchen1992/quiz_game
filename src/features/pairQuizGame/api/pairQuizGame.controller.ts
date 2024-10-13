@@ -27,12 +27,6 @@ import { ConnectToPendingGameCommand } from '@features/pairQuizGame/application/
 import { CheckUserParticipationInGameCommand } from '@features/pairQuizGame/application/handlers/check-user-participation-in-game.handler';
 import { GetCurrentPairGameQuery } from '@features/pairQuizGame/application/handlers/get-current-pair-qame.handler';
 import { GetCurrentPairGameByIdQuery } from '@features/pairQuizGame/application/handlers/get-current-pair-qame-by-id.handler';
-import { IsUUID } from 'class-validator';
-
-class GetGameParamsDto {
-  @IsUUID('4') // '4' означает, что проверка будет выполняться на UUID v4
-  gameId: string;
-}
 
 @SkipThrottle()
 @ApiTags('PairQuizGame')
