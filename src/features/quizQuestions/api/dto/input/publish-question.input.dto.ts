@@ -1,13 +1,4 @@
-import {
-  ArrayMaxSize,
-  ArrayNotEmpty,
-  IsArray,
-  IsBoolean,
-  IsNotEmpty,
-  IsString,
-  Length,
-} from 'class-validator';
-import { Trim } from '@infrastructure/decorators/transform/trim';
+import { IsBoolean, IsNotEmpty } from 'class-validator';
 
 export class PublishQuestionInputDto {
   @IsBoolean({ message: 'Published must be a boolean' })

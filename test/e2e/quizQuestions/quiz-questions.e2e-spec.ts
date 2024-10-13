@@ -113,7 +113,7 @@ describe(`Endpoint (GET) - /sa/quiz/questions`, () => {
       updated_at: null,
     });
 
-    const savedQuestion1 = await quizQuestionRepository.save(question1);
+    await quizQuestionRepository.save(question1);
 
     const question2 = quizQuestionRepository.create({
       body: newQuestion.body,

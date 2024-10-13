@@ -55,13 +55,15 @@ beforeAll(async () => {
 
   applyAppSettings(app);
   dataSource = moduleFixture.get<DataSource>(DataSource);
-  quizQuestionRepository = moduleFixture.get<Repository<QuizQuestion>>(getRepositoryToken(QuizQuestion));
+  quizQuestionRepository = moduleFixture.get<Repository<QuizQuestion>>(
+    getRepositoryToken(QuizQuestion),
+  );
 
   await app.init();
 });
 
 beforeEach(async () => {
-  const tables = ['users', 'posts', 'blogs', "quiz_questions"];
+  const tables = ['users', 'posts', 'blogs', 'quiz_questions'];
 
   for (const table of tables) {
     await dataSource.query(`TRUNCATE TABLE ${table} RESTART IDENTITY CASCADE`);

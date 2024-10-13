@@ -42,7 +42,7 @@ import { PairQuizModule } from '@features/pairQuizGame/pairQuizGame.module';
         const environmentSettings = configService.get('environmentSettings', {
           infer: true,
         });
-        const isTestEnv = environmentSettings.isTesting();
+        //const isTestEnv = environmentSettings.isTesting();
         const isDevelopmentEnv = environmentSettings.isDevelopment();
 
         // Отключение троттлинга в тестовой среде

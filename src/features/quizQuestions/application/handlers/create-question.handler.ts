@@ -21,7 +21,7 @@ export class CreateQuestionHandler
 
     const newQuestion: CreateQuestionInputDto = {
       body,
-      correctAnswers
+      correctAnswers,
     };
 
     return await this.quizQuestionsRepository.create(newQuestion);
