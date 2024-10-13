@@ -48,6 +48,27 @@ export class GameRepository {
     }
   }
 
+  public async getGameById(gameId: string): Promise<Game | null> {
+    try {
+      return await this.gameRepository.findOne({
+        where: [{ id: gameId, status: GameStatus.ACTIVE }],
+        relations: [
+          'first_player',
+          'second_player',
+          'first_player.user',
+          'second_player.user',
+          'questions',
+          'questions.question',
+        ],
+      });
+    } catch (error) {
+      console.error('Error fetching game by userId', {
+        error: (error as Error).message,
+      });
+      throw new InternalServerErrorException('Could not fetch game by userId');
+    }
+  }
+
   public async getPendingGame(): Promise<Game | null> {
     try {
       return await this.gameRepository.findOne({

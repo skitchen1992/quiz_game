@@ -1,8 +1,11 @@
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import {
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
+  Param,
+  ParseUUIDPipe,
   Post,
   Req,
   UseGuards,
@@ -23,6 +26,13 @@ import {
 import { ConnectToPendingGameCommand } from '@features/pairQuizGame/application/handlers/connect-to-panding-game.handler';
 import { CheckUserParticipationInGameCommand } from '@features/pairQuizGame/application/handlers/check-user-participation-in-game.handler';
 import { GetCurrentPairGameQuery } from '@features/pairQuizGame/application/handlers/get-current-pair-qame.handler';
+import { GetCurrentPairGameByIdQuery } from '@features/pairQuizGame/application/handlers/get-current-pair-qame-by-id.handler';
+import { IsUUID } from 'class-validator';
+
+class GetGameParamsDto {
+  @IsUUID('4') // '4' означает, что проверка будет выполняться на UUID v4
+  gameId: string;
+}
 
 @SkipThrottle()
 @ApiTags('PairQuizGame')
@@ -80,12 +90,30 @@ export class PairQuizGameController {
   @HttpCode(HttpStatus.OK)
   @ApiSecurity('bearer')
   @UseGuards(BearerAuthGuard)
-  @Post('my-current')
+  @Get('my-current')
   async currenGame(@Req() request: Request) {
     const user = request.currentUser!;
 
     const game = await this.queryBus.execute<GetCurrentPairGameQuery, Game>(
       new GetCurrentPairGameQuery(user.id),
+    );
+
+    // Возвращает информацию об активной игре
+    return ActiveGameDtoMapper(game);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @ApiSecurity('bearer')
+  @UseGuards(BearerAuthGuard)
+  @Get(':gameId')
+  async getGameById(
+    @Req() request: Request,
+    @Param('gameId', ParseUUIDPipe) gameId: string,
+  ) {
+    const user = request.currentUser!;
+
+    const game = await this.queryBus.execute<GetCurrentPairGameByIdQuery, Game>(
+      new GetCurrentPairGameByIdQuery(user.id, gameId),
     );
 
     // Возвращает информацию об активной игре
