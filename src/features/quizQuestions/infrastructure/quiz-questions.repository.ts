@@ -86,6 +86,7 @@ export class QuizQuestionsRepository {
     try {
       return await this.quizQuestionRepository
         .createQueryBuilder('question')
+        .where('question.published = :published', { published: true })
         .orderBy('RANDOM()')
         .limit(limit)
         .getMany();
