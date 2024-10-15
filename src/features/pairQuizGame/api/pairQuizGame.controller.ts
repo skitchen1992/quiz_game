@@ -1,5 +1,6 @@
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -27,6 +28,9 @@ import { ConnectToPendingGameCommand } from '@features/pairQuizGame/application/
 import { CheckUserParticipationInGameCommand } from '@features/pairQuizGame/application/handlers/check-user-participation-in-game.handler';
 import { GetCurrentPairGameQuery } from '@features/pairQuizGame/application/handlers/get-current-pair-qame.handler';
 import { GetCurrentPairGameByIdQuery } from '@features/pairQuizGame/application/handlers/get-current-pair-qame-by-id.handler';
+import { AnswerDto } from '@features/pairQuizGame/api/dto/input/create-blog.input.dto';
+import { GetPlayerQuery } from '@features/pairQuizGame/application/handlers/get-player.handler';
+import { GetAnswersCountQuery } from '@features/pairQuizGame/application/handlers/get-answers-count.handler';
 
 @SkipThrottle()
 @ApiTags('PairQuizGame')
@@ -88,6 +92,7 @@ export class PairQuizGameController {
   async currenGame(@Req() request: Request) {
     const user = request.currentUser!;
 
+    // Запрашивает информацию о текущей активной игре для пользователя
     const game = await this.queryBus.execute<GetCurrentPairGameQuery, Game>(
       new GetCurrentPairGameQuery(user.id),
     );
@@ -112,5 +117,40 @@ export class PairQuizGameController {
 
     // Возвращает информацию об активной игре
     return ActiveGameDtoMapper(game);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @ApiSecurity('bearer')
+  @UseGuards(BearerAuthGuard)
+  @Post('my-current/answers')
+  async answers(@Req() request: Request, @Body() input: AnswerDto) {
+    const user = request.currentUser!;
+
+    const { answer } = input;
+
+    // Запрашивает информацию о текущем пользователе в паре
+    const player = await this.queryBus.execute<GetPlayerQuery, Player>(
+      new GetPlayerQuery(user.id),
+    );
+
+    // Запрашивает информацию о количестве ответов
+    const answersCount = await this.queryBus.execute<
+      GetAnswersCountQuery,
+      number
+    >(new GetAnswersCountQuery(player.id));
+
+    // Запрашивает информацию о текущей активной парной игре для пользователя
+    const game = await this.queryBus.execute<GetCurrentPairGameQuery, Game>(
+      new GetCurrentPairGameQuery(user.id),
+    );
+
+    const questionId = game.questions[answersCount].question_id;
+
+    // const answer = await this.queryBus.execute<CreateAnswerCommand, Answer>(
+    //   new CreateAnswerCommand(user.id, questionId, answerStatus),
+    // );
+    //
+    console.log('questionId', questionId);
+    // Возвращает информацию об активной игре
   }
 }

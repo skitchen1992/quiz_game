@@ -18,6 +18,9 @@ import { QuestionOfGameRepository } from '@features/pairQuizGame/infrastructure/
 import { QuizQuestionsRepository } from '@features/quizQuestions/infrastructure/quiz-questions.repository';
 import { GetCurrentPairGameHandler } from '@features/pairQuizGame/application/handlers/get-current-pair-qame.handler';
 import { GetCurrentPairGameByIdHandler } from '@features/pairQuizGame/application/handlers/get-current-pair-qame-by-id.handler';
+import { GetPlayerHandler } from '@features/pairQuizGame/application/handlers/get-player.handler';
+import { AnswerRepository } from '@features/pairQuizGame/infrastructure/answer.repository';
+import { GetAnswersCountHandler } from '@features/pairQuizGame/application/handlers/get-answers-count.handler';
 
 const handlers: Provider[] = [
   GetPendingGameHandler,
@@ -27,6 +30,8 @@ const handlers: Provider[] = [
   CheckUserParticipationInGameHandler,
   GetCurrentPairGameHandler,
   GetCurrentPairGameByIdHandler,
+  GetPlayerHandler,
+  GetAnswersCountHandler,
 ];
 
 const repositories: Provider[] = [
@@ -34,6 +39,7 @@ const repositories: Provider[] = [
   GameRepository,
   QuestionOfGameRepository,
   QuizQuestionsRepository,
+  AnswerRepository,
 ];
 
 @Module({
