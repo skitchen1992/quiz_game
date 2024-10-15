@@ -36,4 +36,22 @@ export class QuestionOfGameRepository {
       );
     }
   }
+
+  public async findByQuestionId(
+    questionId: string,
+  ): Promise<QuestionOfGame | null> {
+    try {
+      return await this.questionOfGameRepository.findOne({
+        where: { question_id: questionId },
+        relations: ['question'],
+      });
+    } catch (error) {
+      console.error('Error finding QuestionOfGame by question_id', {
+        error: (error as Error).message,
+      });
+      throw new InternalServerErrorException(
+        'Could not find QuestionOfGame by question_id',
+      );
+    }
+  }
 }

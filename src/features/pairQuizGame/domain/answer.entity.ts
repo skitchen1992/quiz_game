@@ -15,8 +15,8 @@ export enum AnswerStatus {
 }
 @Entity({ name: 'answer' })
 export class Answer {
-  @PrimaryGeneratedColumn('increment')
-  public id: number;
+  @PrimaryGeneratedColumn('uuid')
+  public id: string;
 
   @Column({
     type: 'enum',
@@ -36,7 +36,7 @@ export class Answer {
   question_id: string;
 
   @ManyToOne(() => QuestionOfGame, { nullable: false })
-  @JoinColumn({ name: 'question_id' })
+  @JoinColumn({ name: 'question_id', referencedColumnName: 'question_id' })
   question: QuestionOfGame;
 
   @Column({ type: 'uuid', nullable: false })

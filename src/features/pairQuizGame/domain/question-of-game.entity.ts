@@ -4,11 +4,13 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 import { QuizQuestion } from '@features/quizQuestions/domain/quizQuestions.entity';
 import { Game } from '@features/pairQuizGame/domain/game.entity';
 
 @Entity('question_of_game')
+@Unique(['question_id']) // Уникальное ограничение для question_id
 export class QuestionOfGame {
   @PrimaryGeneratedColumn('uuid')
   public id: string;

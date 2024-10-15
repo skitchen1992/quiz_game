@@ -31,6 +31,11 @@ import { GetCurrentPairGameByIdQuery } from '@features/pairQuizGame/application/
 import { AnswerDto } from '@features/pairQuizGame/api/dto/input/create-blog.input.dto';
 import { GetPlayerQuery } from '@features/pairQuizGame/application/handlers/get-player.handler';
 import { GetAnswersCountQuery } from '@features/pairQuizGame/application/handlers/get-answers-count.handler';
+import { Answer } from '@features/pairQuizGame/domain/answer.entity';
+import { CreateAnswerCommand } from '@features/pairQuizGame/application/handlers/create-answer.handler';
+import { AnswerDtoMapper } from '@features/pairQuizGame/api/dto/output/answer.output.dto';
+import { UpdateScoreCommand } from '@features/pairQuizGame/application/handlers/update-score.handler';
+import { FinishGameCommand } from '@features/pairQuizGame/application/handlers/finish-game.handler';
 
 @SkipThrottle()
 @ApiTags('PairQuizGame')
@@ -144,13 +149,24 @@ export class PairQuizGameController {
       new GetCurrentPairGameQuery(user.id),
     );
 
-    const questionId = game.questions[answersCount].question_id;
+    // Отвечаем на вопрос
+    const answerResult = await this.commandBus.execute<
+      CreateAnswerCommand,
+      Answer
+    >(new CreateAnswerCommand(game, player, answersCount, answer));
 
-    // const answer = await this.queryBus.execute<CreateAnswerCommand, Answer>(
-    //   new CreateAnswerCommand(user.id, questionId, answerStatus),
-    // );
-    //
-    console.log('questionId', questionId);
-    // Возвращает информацию об активной игре
+    // Начисляем или не начисляем очки
+    await this.commandBus.execute<UpdateScoreCommand>(
+      new UpdateScoreCommand(answerResult, player.id),
+    );
+
+    console.log('game', game);
+    // Заканчиваем игру
+    await this.commandBus.execute<FinishGameCommand>(
+      new FinishGameCommand(answerResult, player.id),
+    );
+
+    // Возвращает результат ответа
+    return AnswerDtoMapper(answerResult);
   }
 }

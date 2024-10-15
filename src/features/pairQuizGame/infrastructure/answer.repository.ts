@@ -47,6 +47,8 @@ export class AnswerRepository {
     } catch (error) {
       console.error('Error saving answer', {
         error: (error as Error).message,
+        playerId,
+        questionId,
       });
       throw new InternalServerErrorException('Could not save answer');
     }

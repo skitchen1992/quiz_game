@@ -21,6 +21,9 @@ import { GetCurrentPairGameByIdHandler } from '@features/pairQuizGame/applicatio
 import { GetPlayerHandler } from '@features/pairQuizGame/application/handlers/get-player.handler';
 import { AnswerRepository } from '@features/pairQuizGame/infrastructure/answer.repository';
 import { GetAnswersCountHandler } from '@features/pairQuizGame/application/handlers/get-answers-count.handler';
+import { CreateAnswerHandler } from '@features/pairQuizGame/application/handlers/create-answer.handler';
+import { UpdateScoreHandler } from '@features/pairQuizGame/application/handlers/update-score.handler';
+import { FinishGameHandler } from '@features/pairQuizGame/application/handlers/finish-game.handler';
 
 const handlers: Provider[] = [
   GetPendingGameHandler,
@@ -32,6 +35,9 @@ const handlers: Provider[] = [
   GetCurrentPairGameByIdHandler,
   GetPlayerHandler,
   GetAnswersCountHandler,
+  CreateAnswerHandler,
+  UpdateScoreHandler,
+  FinishGameHandler,
 ];
 
 const repositories: Provider[] = [

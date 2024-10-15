@@ -50,4 +50,25 @@ export class PlayerRepository {
       throw new InternalServerErrorException('Could not find player');
     }
   }
+
+  public async incrementScore(playerId: string): Promise<Player> {
+    try {
+      const player = await this.playerRepository.findOneOrFail({
+        where: { id: playerId },
+      });
+
+      player.score += 1;
+
+      await this.playerRepository.save(player);
+
+      return player;
+    } catch (error) {
+      console.error('Error incrementing score', {
+        error: (error as Error).message,
+      });
+      throw new InternalServerErrorException(
+        'Could not increment player score',
+      );
+    }
+  }
 }
