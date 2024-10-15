@@ -160,10 +160,9 @@ export class PairQuizGameController {
       new UpdateScoreCommand(answerResult, player.id),
     );
 
-    console.log('game', game);
     // Заканчиваем игру
     await this.commandBus.execute<FinishGameCommand>(
-      new FinishGameCommand(answerResult, player.id),
+      new FinishGameCommand(game.id),
     );
 
     // Возвращает результат ответа

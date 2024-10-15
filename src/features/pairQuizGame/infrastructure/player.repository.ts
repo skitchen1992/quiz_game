@@ -71,4 +71,26 @@ export class PlayerRepository {
       );
     }
   }
+
+  public async updatePlayerStatus(
+    playerId: string,
+    status: PlayerStatus,
+  ): Promise<Player> {
+    try {
+      const player = await this.playerRepository.findOneOrFail({
+        where: { id: playerId },
+      });
+
+      player.status = status;
+
+      await this.playerRepository.save(player);
+
+      return player;
+    } catch (error) {
+      console.error('Error updating player status', {
+        error: (error as Error).message,
+      });
+      throw new InternalServerErrorException('Could not update player status');
+    }
+  }
 }

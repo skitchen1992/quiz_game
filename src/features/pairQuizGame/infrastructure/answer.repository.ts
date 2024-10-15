@@ -29,6 +29,21 @@ export class AnswerRepository {
     }
   }
 
+  public async getAnswersByPlayerId(playerId: string): Promise<Answer[]> {
+    try {
+      return await this.answerRepository.find({
+        where: { player_id: playerId },
+      });
+    } catch (error) {
+      console.error('Error fetching answer by playerId', {
+        error: (error as Error).message,
+      });
+      throw new InternalServerErrorException(
+        'Could not fetch answer  by playerId',
+      );
+    }
+  }
+
   public async createAnswer(
     playerId: string,
     questionId: string,
@@ -51,6 +66,25 @@ export class AnswerRepository {
         questionId,
       });
       throw new InternalServerErrorException('Could not save answer');
+    }
+  }
+
+  public async hasCorrectAnswerByPlayerId(playerId: string): Promise<boolean> {
+    try {
+      const count = await this.answerRepository
+        .createQueryBuilder('answer')
+        .where('answer.player_id = :playerId', { playerId })
+        .andWhere('answer.status = :status', { status: AnswerStatus.CORRECT })
+        .getCount();
+
+      return count > 0; // Возвращаем true, если есть хотя бы один ответ со статусом Correct
+    } catch (error) {
+      console.error('Error checking for correct answer by playerId', {
+        error: (error as Error).message,
+      });
+      throw new InternalServerErrorException(
+        'Could not check for correct answer by playerId',
+      );
     }
   }
 }

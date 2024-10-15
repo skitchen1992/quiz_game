@@ -142,4 +142,42 @@ export class GameRepository {
       throw new InternalServerErrorException('Could not update game');
     }
   }
+
+  public async finishGame(gameId: string): Promise<Game> {
+    try {
+      await this.gameRepository.update(
+        { id: gameId },
+        {
+          status: GameStatus.FINISHED,
+          finished_at: new Date(),
+          updated_at: new Date(),
+        },
+      );
+
+      const finishedGame = await this.gameRepository.findOne({
+        where: { id: gameId },
+        relations: [
+          'first_player',
+          'second_player',
+          'first_player.user',
+          'second_player.user',
+          'questions',
+          'questions.question',
+        ],
+      });
+
+      if (!finishedGame) {
+        throw new InternalServerErrorException(
+          'Could not retrieve finished game',
+        );
+      }
+
+      return finishedGame;
+    } catch (error) {
+      console.error('Error finishing game', {
+        error: (error as Error).message,
+      });
+      throw new InternalServerErrorException('Could not finish game');
+    }
+  }
 }
