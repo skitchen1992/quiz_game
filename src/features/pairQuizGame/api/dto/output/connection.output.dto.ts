@@ -46,7 +46,7 @@ export const PendingGameDtoMapper = (
   outputDto.firstPlayerProgress = {
     answers: [],
     player: {
-      id: player.id,
+      id: player.user.id,
       login: player.user.login,
     },
     score: player.score,
@@ -70,7 +70,7 @@ export const ActiveGameDtoMapper = (game: Game): ConnectionOutputDto => {
       ? game.first_player.answers.map((answer) => AnswerDtoMapper(answer))
       : [],
     player: {
-      id: game.first_player_id,
+      id: game.first_player.user_id,
       login: game.first_player!.user.login,
     },
     score: game.first_player!.score,
@@ -80,7 +80,7 @@ export const ActiveGameDtoMapper = (game: Game): ConnectionOutputDto => {
       ? game.second_player!.answers.map((answer) => AnswerDtoMapper(answer))
       : [],
     player: {
-      id: game.second_player_id,
+      id: game.second_player!.user_id,
       login: game.second_player!.user.login,
     },
     score: game.second_player!.score,

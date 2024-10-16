@@ -120,6 +120,7 @@ export class PairQuizGameController {
       new GetCurrentPairGameByIdQuery(user.id, gameId),
     );
 
+    console.log('game', game);
     if (game.status === GameStatus.ACTIVE) {
       // Возвращает информацию об активной игре
       return ActiveGameDtoMapper(game);
