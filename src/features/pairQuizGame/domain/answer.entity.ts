@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Player } from '@features/pairQuizGame/domain/player.entity';
-import { QuestionOfGame } from '@features/pairQuizGame/domain/question-of-game.entity';
+import { QuizQuestion } from '@features/quizQuestions/domain/quizQuestions.entity';
 
 export enum AnswerStatus {
   CORRECT = 'Correct',
@@ -35,9 +35,9 @@ export class Answer {
   @Column({ type: 'uuid', nullable: false })
   question_id: string;
 
-  @ManyToOne(() => QuestionOfGame, { nullable: false })
-  @JoinColumn({ name: 'question_id', referencedColumnName: 'question_id' })
-  question: QuestionOfGame;
+  @ManyToOne(() => QuizQuestion)
+  @JoinColumn({ name: 'question_id' })
+  question: QuizQuestion;
 
   @Column({ type: 'uuid', nullable: false })
   player_id: string;

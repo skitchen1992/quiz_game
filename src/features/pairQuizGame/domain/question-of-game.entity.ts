@@ -4,13 +4,11 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  Unique,
 } from 'typeorm';
 import { QuizQuestion } from '@features/quizQuestions/domain/quizQuestions.entity';
 import { Game } from '@features/pairQuizGame/domain/game.entity';
 
 @Entity('question_of_game')
-@Unique(['question_id']) // Уникальное ограничение для question_id
 export class QuestionOfGame {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
@@ -32,3 +30,23 @@ export class QuestionOfGame {
   @JoinColumn({ name: 'game_id' })
   game: Game;
 }
+// {
+//   "body": "What is the capital of France?",
+//   "correctAnswers": ["Paris"]
+// },
+// {
+//   "body": "Which planet is known as the Red Planet?",
+//   "correctAnswers": ["Mars"]
+// },
+// {
+//   "body": "What is the largest mammal?",
+//   "correctAnswers": ["Blue whale"]
+// },
+// {
+//   "body": "In what year did the Titanic sink?",
+//   "correctAnswers": ["1912"]
+// },
+// {
+//   "body": "What is the square root of 64?",
+//   "correctAnswers": ["8"]
+// },

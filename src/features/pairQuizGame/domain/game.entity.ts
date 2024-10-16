@@ -41,12 +41,6 @@ export class Game {
   })
   updated_at: Date | null;
 
-  // @Column({
-  //   type: 'timestamptz',
-  //   nullable: true,
-  // })
-  // pair_created_at: Date | null;
-
   @Column({
     type: 'timestamptz',
     nullable: true,
@@ -78,9 +72,9 @@ export class Game {
 }
 
 //1
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0OTc4MWZlOC1iY2RkLTQ1MzEtOGU2Zi1mMTg0ZDRkYzIyYmIiLCJpYXQiOjE3MjkwNjI1OTUsImV4cCI6MTcyOTE0ODk5NX0._MQitxRoBu6j0fCqqTK8SQWMZScv1a56mO-9Nz9vyZQ
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZTczZDE5Ny1jYTgxLTQ3NzItODgyYy02MDU4MGMxN2E3MTciLCJpYXQiOjE3MjkwOTA4MjQsImV4cCI6MTcyOTE3NzIyNH0.pw53kxMJplg5DhaBI6HItHvvBwpDTWIFChpSi6YvQuw
 // 2
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyOTIwYTVmMi1kZTJjLTQ2NGMtODBhNC0yMmVmZGQzMmU5ODEiLCJpYXQiOjE3MjkwNjI2MTMsImV4cCI6MTcyOTE0OTAxM30.eF_nm8LzYfl9yE1CcRUGOmZUyjH9yPEgHYj1PTK2S7U
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJmOGEwNDNiYy0wZGI4LTRmZDctOGUxNS0wZjM2ZDg0YWRjY2EiLCJpYXQiOjE3MjkwOTA4NDEsImV4cCI6MTcyOTE3NzI0MX0.UTrKmb4adki5w7KrVF28lBpaTJi-_KMYKFmXCB2QiVU
 // 3
 //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlYTM2NjI0Yi0xN2YyLTRkZmQtOGY5ZC04ZDk0YjMwMGI1MWQiLCJpYXQiOjE3MjkwNjEyMDIsImV4cCI6MTcyOTE0NzYwMn0.as3OoDi_v-2B6rO0ok5AMgIp_xYxx1G4YYRtOKSDcHo
 // 4
