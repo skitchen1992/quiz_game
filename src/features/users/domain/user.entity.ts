@@ -11,6 +11,7 @@ import { RecoveryCode } from '@features/users/domain/recoveryCode.entity';
 import { Session } from '@features/session/domain/session.entity';
 import { Comment } from '@features/comments/domain/comment.entity';
 import { Like } from '@features/likes/domain/likes.entity';
+import { Player } from '@features/pairQuizGame/domain/player.entity';
 
 @Entity('users')
 export class User {
@@ -50,4 +51,7 @@ export class User {
 
   @OneToMany(() => Like, (like) => like.author)
   likes?: Like[];
+
+  @OneToMany(() => Player, (player) => player.user)
+  player?: Like[];
 }

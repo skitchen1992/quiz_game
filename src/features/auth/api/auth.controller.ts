@@ -17,7 +17,7 @@ import { NewPasswordDto } from '@features/auth/api/dto/input/new-password.input.
 import { RegistrationConfirmationDto } from '@features/auth/api/dto/input/registration-confirmation.input.dto';
 import { RegistrationEmailResendingDto } from '@features/auth/api/dto/input/registration-email-resending.input.dto';
 import { Request, Response } from 'express';
-import { JwtAuthGuard } from '@infrastructure/guards/bearer-auth-guard.service';
+import { BearerAuthGuard } from '@infrastructure/guards/bearer-auth-guard.service';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { LoginCommand } from '@features/auth/application/handlers/login.handler';
 import { LoginOutputDto } from '@features/auth/api/dto/output/login.output.dto';
@@ -123,7 +123,7 @@ export class AuthController {
   }
 
   @ApiSecurity('bearer')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(BearerAuthGuard)
   @Get('me')
   async me(@Req() request: Request) {
     const user = request.currentUser;

@@ -19,6 +19,8 @@ import { LikesModule } from '@features/likes/likes.module';
 import { SessionModule } from '@features/session/session.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { QuizQuestionsModule } from '@features/quizQuestions/quizQuestions.module';
+import { PairQuizModule } from '@features/pairQuizGame/pairQuizGame.module';
 
 @Module({
   // Регистрация модулей
@@ -40,7 +42,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         const environmentSettings = configService.get('environmentSettings', {
           infer: true,
         });
-        const isTestEnv = environmentSettings.isTesting();
+        //const isTestEnv = environmentSettings.isTesting();
         const isDevelopmentEnv = environmentSettings.isDevelopment();
 
         // Отключение троттлинга в тестовой среде
@@ -114,6 +116,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     SharedModule,
     SessionModule,
     TestingModule,
+    QuizQuestionsModule,
+    PairQuizModule,
   ],
   // Регистрация провайдеров
   providers: [],
