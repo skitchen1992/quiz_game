@@ -1,6 +1,7 @@
 import { Game, GameStatus } from '@features/pairQuizGame/domain/game.entity';
 import { AnswerStatus } from '@features/pairQuizGame/domain/answer.entity';
 import { Player } from '@features/pairQuizGame/domain/player.entity';
+import { AnswerDtoMapper } from '@features/pairQuizGame/api/dto/output/answer.output.dto';
 
 interface Answer {
   questionId: string;
@@ -43,7 +44,7 @@ export const PendingGameDtoMapper = (
 
   outputDto.id = game.id;
   outputDto.firstPlayerProgress = {
-    answers: null,
+    answers: [],
     player: {
       id: player.id,
       login: player.user.login,
@@ -52,9 +53,10 @@ export const PendingGameDtoMapper = (
   };
   outputDto.secondPlayerProgress = null;
   outputDto.questions = null;
-  outputDto.pairCreatedDate = null;
+  outputDto.pairCreatedDate = game.created_at.toISOString();
   outputDto.startGameDate = null;
   outputDto.finishGameDate = null;
+  outputDto.status = game.status;
 
   return outputDto;
 };
@@ -64,7 +66,9 @@ export const ActiveGameDtoMapper = (game: Game): ConnectionOutputDto => {
 
   outputDto.id = game.id;
   outputDto.firstPlayerProgress = {
-    answers: null,
+    answers: game.first_player.answers
+      ? game.first_player.answers.map((answer) => AnswerDtoMapper(answer))
+      : [],
     player: {
       id: game.first_player_id,
       login: game.first_player!.user.login,
@@ -72,7 +76,9 @@ export const ActiveGameDtoMapper = (game: Game): ConnectionOutputDto => {
     score: game.first_player!.score,
   };
   outputDto.secondPlayerProgress = {
-    answers: null,
+    answers: game.second_player!.answers
+      ? game.second_player!.answers.map((answer) => AnswerDtoMapper(answer))
+      : [],
     player: {
       id: game.second_player_id,
       login: game.second_player!.user.login,
@@ -83,9 +89,12 @@ export const ActiveGameDtoMapper = (game: Game): ConnectionOutputDto => {
     id: question.question.id,
     body: question.question.body,
   }));
-  outputDto.pairCreatedDate = game.pair_created_at!.toISOString();
+  outputDto.pairCreatedDate = game.created_at!.toISOString();
   outputDto.startGameDate = game.started_at!.toISOString();
-  outputDto.finishGameDate = null;
+  outputDto.finishGameDate = game.finished_at
+    ? game.finished_at.toISOString()
+    : null;
+  outputDto.status = game.status;
 
   return outputDto;
 };

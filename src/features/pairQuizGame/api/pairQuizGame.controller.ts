@@ -16,7 +16,7 @@ import { SkipThrottle } from '@nestjs/throttler';
 import { BearerAuthGuard } from '@infrastructure/guards/bearer-auth-guard.service';
 import { Request } from 'express';
 import { GetPendingGameQuery } from '@features/pairQuizGame/application/handlers/get-qame.handler';
-import { Game } from '@features/pairQuizGame/domain/game.entity';
+import { Game, GameStatus } from '@features/pairQuizGame/domain/game.entity';
 import { CreatePlayerCommand } from '@features/pairQuizGame/application/handlers/create-player.handler';
 import { Player } from '@features/pairQuizGame/domain/player.entity';
 import { CreateGameCommand } from '@features/pairQuizGame/application/handlers/create-qame.handler';
@@ -120,8 +120,13 @@ export class PairQuizGameController {
       new GetCurrentPairGameByIdQuery(user.id, gameId),
     );
 
-    // Возвращает информацию об активной игре
-    return ActiveGameDtoMapper(game);
+    if (game.status === GameStatus.ACTIVE) {
+      // Возвращает информацию об активной игре
+      return ActiveGameDtoMapper(game);
+    } else {
+      // Возвращает информацию о новой ожидающей игре
+      return PendingGameDtoMapper(game, game.first_player);
+    }
   }
 
   @HttpCode(HttpStatus.OK)

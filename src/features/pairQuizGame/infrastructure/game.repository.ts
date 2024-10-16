@@ -110,7 +110,7 @@ export class GameRepository {
         {
           status: GameStatus.ACTIVE,
           updated_at: new Date(),
-          pair_created_at: new Date(),
+          // pair_created_at: new Date(),
           started_at: new Date(),
           second_player_id: secondPlayer.id,
         },
