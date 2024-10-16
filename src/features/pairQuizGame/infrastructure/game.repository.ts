@@ -51,7 +51,7 @@ export class GameRepository {
   public async getGameById(gameId: string): Promise<Game | null> {
     try {
       return await this.gameRepository.findOne({
-        where: [{ id: gameId, status: GameStatus.ACTIVE }],
+        where: [{ id: gameId }],
         relations: [
           'first_player',
           'second_player',
