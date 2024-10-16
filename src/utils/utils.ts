@@ -1,9 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { PlayerStatus } from '@features/pairQuizGame/domain/player.entity';
-import {
-  Answer,
-  AnswerStatus,
-} from '@features/pairQuizGame/domain/answer.entity';
+import { Answer } from '@features/pairQuizGame/domain/answer.entity';
 
 export const getUniqueId = () => {
   return uuidv4();

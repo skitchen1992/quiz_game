@@ -94,7 +94,7 @@ export class PairQuizGameController {
   @ApiSecurity('bearer')
   @UseGuards(BearerAuthGuard)
   @Get('my-current')
-  async currenGame(@Req() request: Request) {
+  async currentGame(@Req() request: Request) {
     const user = request.currentUser!;
 
     // Запрашивает информацию о текущей активной игре для пользователя
@@ -102,8 +102,13 @@ export class PairQuizGameController {
       new GetCurrentPairGameQuery(user.id),
     );
 
-    // Возвращает информацию об активной игре
-    return ActiveGameDtoMapper(game);
+    if (game.status !== GameStatus.PENDING_SECOND_PLAYER) {
+      // Возвращает информацию об активной игре
+      return ActiveGameDtoMapper(game);
+    } else {
+      // Возвращает информацию о новой ожидающей игре
+      return PendingGameDtoMapper(game, game.first_player);
+    }
   }
 
   @HttpCode(HttpStatus.OK)
@@ -120,8 +125,7 @@ export class PairQuizGameController {
       new GetCurrentPairGameByIdQuery(user.id, gameId),
     );
 
-    console.log('game', game);
-    if (game.status === GameStatus.ACTIVE) {
+    if (game.status !== GameStatus.PENDING_SECOND_PLAYER) {
       // Возвращает информацию об активной игре
       return ActiveGameDtoMapper(game);
     } else {

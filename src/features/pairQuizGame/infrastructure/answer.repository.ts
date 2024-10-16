@@ -33,6 +33,9 @@ export class AnswerRepository {
     try {
       return await this.answerRepository.find({
         where: { player_id: playerId },
+        order: {
+          created_at: 'ASC',
+        },
       });
     } catch (error) {
       console.error('Error fetching answer by playerId', {

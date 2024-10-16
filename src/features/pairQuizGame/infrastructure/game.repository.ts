@@ -24,24 +24,60 @@ export class GameRepository {
     }
   }
 
+  public async getUnfinishedActiveGameByPlayerId(
+    playerId: string,
+  ): Promise<Game | null> {
+    try {
+      return await this.gameRepository
+        .createQueryBuilder('game')
+        .leftJoinAndSelect('game.first_player', 'first_player')
+        .leftJoinAndSelect('game.second_player', 'second_player')
+        .leftJoinAndSelect('first_player.user', 'first_user')
+        .leftJoinAndSelect('second_player.user', 'second_user')
+        .leftJoinAndSelect('first_player.answers', 'first_answers')
+        .leftJoinAndSelect('second_player.answers', 'second_answers')
+        .leftJoinAndSelect('game.questions', 'questions')
+        .leftJoinAndSelect('questions.question', 'question')
+        .where(
+          '(game.first_player_id = :playerId OR game.second_player_id = :playerId)',
+          { playerId },
+        )
+        .andWhere('game.status IN (:...statuses)', {
+          statuses: [GameStatus.PENDING_SECOND_PLAYER, GameStatus.ACTIVE],
+        })
+        .orderBy('first_answers.created_at', 'ASC')
+        .addOrderBy('second_answers.created_at', 'ASC')
+        .addOrderBy('questions.order', 'ASC')
+        .getOne();
+    } catch (error) {
+      console.error('Error fetching game by userId', {
+        error: (error as Error).message,
+      });
+      throw new InternalServerErrorException('Could not fetch game by userId');
+    }
+  }
+
   public async getActiveGameByPlayerId(playerId: string): Promise<Game | null> {
     try {
-      return await this.gameRepository.findOne({
-        where: [
-          { first_player_id: playerId, status: GameStatus.ACTIVE },
-          { second_player_id: playerId, status: GameStatus.ACTIVE },
-        ],
-        relations: [
-          'first_player',
-          'second_player',
-          'first_player.user',
-          'second_player.user',
-          'first_player.answers',
-          'second_player.answers',
-          'questions',
-          'questions.question',
-        ],
-      });
+      return await this.gameRepository
+        .createQueryBuilder('game')
+        .leftJoinAndSelect('game.first_player', 'first_player')
+        .leftJoinAndSelect('game.second_player', 'second_player')
+        .leftJoinAndSelect('first_player.user', 'first_user')
+        .leftJoinAndSelect('second_player.user', 'second_user')
+        .leftJoinAndSelect('first_player.answers', 'first_answers')
+        .leftJoinAndSelect('second_player.answers', 'second_answers')
+        .leftJoinAndSelect('game.questions', 'questions')
+        .leftJoinAndSelect('questions.question', 'question')
+        .where(
+          '(game.first_player_id = :playerId OR game.second_player_id = :playerId)',
+          { playerId },
+        )
+        .andWhere('game.status = :status', { status: GameStatus.ACTIVE })
+        .orderBy('first_answers.created_at', 'ASC')
+        .addOrderBy('second_answers.created_at', 'ASC')
+        .addOrderBy('questions.order', 'ASC')
+        .getOne();
     } catch (error) {
       console.error('Error fetching game by userId', {
         error: (error as Error).message,
@@ -52,19 +88,21 @@ export class GameRepository {
 
   public async getGameById(gameId: string): Promise<Game | null> {
     try {
-      return await this.gameRepository.findOne({
-        where: [{ id: gameId }],
-        relations: [
-          'first_player',
-          'second_player',
-          'first_player.user',
-          'second_player.user',
-          'first_player.answers',
-          'second_player.answers',
-          'questions',
-          'questions.question',
-        ],
-      });
+      return await this.gameRepository
+        .createQueryBuilder('game')
+        .leftJoinAndSelect('game.first_player', 'first_player')
+        .leftJoinAndSelect('game.second_player', 'second_player')
+        .leftJoinAndSelect('first_player.user', 'first_user')
+        .leftJoinAndSelect('second_player.user', 'second_user')
+        .leftJoinAndSelect('first_player.answers', 'first_answers')
+        .leftJoinAndSelect('second_player.answers', 'second_answers')
+        .leftJoinAndSelect('game.questions', 'questions')
+        .leftJoinAndSelect('questions.question', 'question')
+        .where('game.id = :gameId', { gameId })
+        .orderBy('first_answers.created_at', 'ASC')
+        .addOrderBy('second_answers.created_at', 'ASC')
+        .addOrderBy('questions.order', 'ASC')
+        .getOne();
     } catch (error) {
       console.error('Error fetching game by userId', {
         error: (error as Error).message,
@@ -114,25 +152,27 @@ export class GameRepository {
         {
           status: GameStatus.ACTIVE,
           updated_at: new Date(),
-          // pair_created_at: new Date(),
           started_at: new Date(),
           second_player_id: secondPlayer.id,
         },
       );
 
-      const updatedGame = await this.gameRepository.findOne({
-        where: { id: game.id },
-        relations: [
-          'first_player',
-          'second_player',
-          'first_player.user',
-          'second_player.user',
-          'first_player.answers',
-          'second_player.answers',
-          'questions',
-          'questions.question',
-        ],
-      });
+      // Получаем обновленную игру с отсортированными ответами
+      const updatedGame = await this.gameRepository
+        .createQueryBuilder('game')
+        .leftJoinAndSelect('game.first_player', 'first_player')
+        .leftJoinAndSelect('game.second_player', 'second_player')
+        .leftJoinAndSelect('first_player.user', 'first_user')
+        .leftJoinAndSelect('second_player.user', 'second_user')
+        .leftJoinAndSelect('first_player.answers', 'first_answers')
+        .leftJoinAndSelect('second_player.answers', 'second_answers')
+        .leftJoinAndSelect('game.questions', 'questions')
+        .leftJoinAndSelect('questions.question', 'question')
+        .where('game.id = :gameId', { gameId: game.id })
+        .orderBy('first_answers.created_at', 'ASC')
+        .addOrderBy('second_answers.created_at', 'ASC')
+        .addOrderBy('questions.order', 'ASC')
+        .getOne();
 
       if (!updatedGame) {
         throw new InternalServerErrorException(
@@ -160,19 +200,22 @@ export class GameRepository {
         },
       );
 
-      const finishedGame = await this.gameRepository.findOne({
-        where: { id: gameId },
-        relations: [
-          'first_player',
-          'second_player',
-          'first_player.user',
-          'second_player.user',
-          'first_player.answers',
-          'second_player.answers',
-          'questions',
-          'questions.question',
-        ],
-      });
+      // Получаем завершённую игру с отсортированными ответами
+      const finishedGame = await this.gameRepository
+        .createQueryBuilder('game')
+        .leftJoinAndSelect('game.first_player', 'first_player')
+        .leftJoinAndSelect('game.second_player', 'second_player')
+        .leftJoinAndSelect('first_player.user', 'first_user')
+        .leftJoinAndSelect('second_player.user', 'second_user')
+        .leftJoinAndSelect('first_player.answers', 'first_answers')
+        .leftJoinAndSelect('second_player.answers', 'second_answers')
+        .leftJoinAndSelect('game.questions', 'questions')
+        .leftJoinAndSelect('questions.question', 'question')
+        .where('game.id = :gameId', { gameId })
+        .orderBy('first_answers.created_at', 'ASC')
+        .addOrderBy('second_answers.created_at', 'ASC')
+        .addOrderBy('questions.order', 'ASC')
+        .getOne();
 
       if (!finishedGame) {
         throw new InternalServerErrorException(

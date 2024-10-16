@@ -30,7 +30,9 @@ export class GetCurrentPairGameHandler
       throw new NotFoundException(`Game not found`);
     }
 
-    const game = await this.gameRepository.getActiveGameByPlayerId(player.id);
+    const game = await this.gameRepository.getUnfinishedActiveGameByPlayerId(
+      player.id,
+    );
 
     if (!game) {
       throw new NotFoundException(`Game not found`);

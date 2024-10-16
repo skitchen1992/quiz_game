@@ -3,7 +3,6 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  AfterLoad,
 } from 'typeorm';
 import { Length } from 'class-validator';
 
