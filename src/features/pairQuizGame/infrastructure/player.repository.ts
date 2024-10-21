@@ -2,9 +2,10 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
-  PlayerStatus,
   Player,
+  PlayerStatus,
 } from '@features/pairQuizGame/domain/player.entity';
+import { MyStatisticOutputDto } from '@features/pairQuizGame/api/dto/output/my-statistic.output.dto';
 
 @Injectable()
 export class PlayerRepository {
@@ -91,6 +92,53 @@ export class PlayerRepository {
         error: (error as Error).message,
       });
       throw new InternalServerErrorException('Could not update player status');
+    }
+  }
+
+  public async getPlayerStatisticsByUserId(
+    userId: string,
+  ): Promise<MyStatisticOutputDto> {
+    try {
+      const rawStats = await this.playerRepository
+        .createQueryBuilder('player')
+        .select('COUNT(player.id)', 'gamesCount')
+        .addSelect('SUM(player.score)', 'sumScore')
+        .addSelect('AVG(player.score)', 'avgScores')
+        .addSelect(
+          `SUM(CASE WHEN player.status = :winStatus THEN 1 ELSE 0 END)`,
+          'winsCount',
+        )
+        .addSelect(
+          `SUM(CASE WHEN player.status = :lossStatus THEN 1 ELSE 0 END)`,
+          'lossesCount',
+        )
+        .addSelect(
+          `SUM(CASE WHEN player.status = :drawStatus THEN 1 ELSE 0 END)`,
+          'drawsCount',
+        )
+        .where('player.user_id = :userId', { userId }) // Фильтрация по user_id
+        .setParameters({
+          winStatus: PlayerStatus.WIN,
+          lossStatus: PlayerStatus.LOSS,
+          drawStatus: PlayerStatus.DRAW,
+        })
+        .getRawOne();
+
+      return {
+        gamesCount: Number(rawStats.gamesCount),
+        sumScore: Number(rawStats.sumScore),
+        avgScores: Number(rawStats.avgScores),
+        winsCount: Number(rawStats.winsCount),
+        lossesCount: Number(rawStats.lossesCount),
+        drawsCount: Number(rawStats.drawsCount),
+      };
+    } catch (error) {
+      console.error('Database query failed while fetching player statistics', {
+        error: (error as Error).message,
+      });
+      throw new InternalServerErrorException(
+        'Database query failed while fetching player statistics',
+      );
     }
   }
 }

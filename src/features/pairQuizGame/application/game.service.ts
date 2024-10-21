@@ -21,12 +21,14 @@ import { Answer } from '@features/pairQuizGame/domain/answer.entity';
 import { UpdateScoreCommand } from '@features/pairQuizGame/application/handlers/update-score.handler';
 import { FinishGameCommand } from '@features/pairQuizGame/application/handlers/finish-game.handler';
 import { AnswerDtoMapper } from '@features/pairQuizGame/api/dto/output/answer.output.dto';
+import { PlayerRepository } from '@features/pairQuizGame/infrastructure/player.repository';
 
 @Injectable()
 export class GameService {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
+    private readonly playerRepository: PlayerRepository,
   ) {}
 
   async handleConnection(user: any) {
@@ -132,5 +134,9 @@ export class GameService {
       // Иначе возвращаем ожидающую игру
       return PendingGameDtoMapper(game, game.first_player);
     }
+  }
+
+  async getStatistic(userId: string) {
+    return await this.playerRepository.getPlayerStatisticsByUserId(userId);
   }
 }
