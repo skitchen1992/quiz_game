@@ -35,7 +35,7 @@ import { GetCommentsForPostQuery } from '@features/posts/application/handlers/ge
 import { GetAllPostQuery } from '@features/posts/application/handlers/get-all-posts.handler';
 import { PostOutputDto } from '@features/posts/api/dto/output/post.output.dto';
 import { GetPostQuery } from '@features/posts/application/handlers/get-post.handler';
-import { JwtAuthGuard } from '@infrastructure/guards/bearer-auth-guard.service';
+import { BearerAuthGuard } from '@infrastructure/guards/bearer-auth-guard.service';
 import { LikeOperationCommand } from '@features/posts/application/handlers/like-operation.handler';
 import { Request } from 'express';
 import { LikeDto } from '@features/posts/api/dto/input/like.input.dto';
@@ -55,7 +55,7 @@ export class PostsController {
   ) {}
 
   @ApiSecurity('bearer')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(BearerAuthGuard)
   @Post(':postId/comments')
   async createComment(
     @Body() input: CreateCommentDto,
@@ -158,7 +158,7 @@ export class PostsController {
   }
 
   @ApiSecurity('bearer')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(BearerAuthGuard)
   @Put(':postId/like-status')
   @HttpCode(HttpStatus.NO_CONTENT)
   async likeOperation(

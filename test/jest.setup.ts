@@ -8,11 +8,15 @@ import { APISettings } from '@settings/api-settings';
 import { EnvironmentSettings } from '@settings/env-settings';
 import { HashBuilder } from '@utils/hash-builder';
 import { JwtService } from '@nestjs/jwt/dist/jwt.service';
-import { DataSource } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { SharedService } from '@infrastructure/servises/shared/shared.service';
+import { QuizQuestion } from '@features/quizQuestions/domain/quizQuestions.entity';
+import { getRepositoryToken } from '@nestjs/typeorm';
 
 export let app: INestApplication;
 export let dataSource: DataSource;
+export let quizQuestionRepository: Repository<QuizQuestion>;
+
 export let apiSettings: APISettings;
 export let environmentSettings: EnvironmentSettings;
 
@@ -41,7 +45,6 @@ beforeAll(async () => {
     });
 
   app = moduleFixture.createNestApplication();
-  dataSource = moduleFixture.get<DataSource>(DataSource);
 
   const configService = app.get(ConfigService<ConfigurationType, true>);
 
@@ -52,12 +55,15 @@ beforeAll(async () => {
 
   applyAppSettings(app);
   dataSource = moduleFixture.get<DataSource>(DataSource);
+  quizQuestionRepository = moduleFixture.get<Repository<QuizQuestion>>(
+    getRepositoryToken(QuizQuestion),
+  );
 
   await app.init();
 });
 
 beforeEach(async () => {
-  const tables = ['users', 'posts', 'blogs']; // Список всех таблиц, которые нужно очистить
+  const tables = ['users', 'posts', 'blogs', 'quiz_questions'];
 
   for (const table of tables) {
     await dataSource.query(`TRUNCATE TABLE ${table} RESTART IDENTITY CASCADE`);

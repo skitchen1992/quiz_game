@@ -11,11 +11,22 @@ export class TestingController {
   @Delete('all-data')
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete() {
-    const tables = ['users', 'blogs', 'posts'];
+    // Получаем все таблицы в базе данных
+    const tables = await this.dataSource.query(`
+      SELECT table_name
+      FROM information_schema.tables
+      WHERE table_schema = 'public'
+    `);
 
-    for (const table of tables) {
+    // Извлекаем имена таблиц
+    const tableNames = tables.map(
+      (table: { table_name: string }) => table.table_name,
+    );
+
+    // Очищаем все таблицы
+    if (tableNames.length > 0) {
       await this.dataSource.query(
-        `TRUNCATE TABLE ${table} RESTART IDENTITY CASCADE`,
+        `TRUNCATE TABLE ${tableNames.join(', ')} RESTART IDENTITY CASCADE`,
       );
     }
   }
