@@ -48,6 +48,16 @@ export class PairQuizGameController {
   @HttpCode(HttpStatus.OK)
   @ApiSecurity('bearer')
   @UseGuards(BearerAuthGuard)
+  @Get('pairs/my')
+  async myGames(@Req() request: Request) {
+    const user = request.currentUser!;
+
+    return this.gameService.getAllGames(user.id);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @ApiSecurity('bearer')
+  @UseGuards(BearerAuthGuard)
   @Get('pairs/:gameId')
   async getGameById(
     @Req() request: Request,

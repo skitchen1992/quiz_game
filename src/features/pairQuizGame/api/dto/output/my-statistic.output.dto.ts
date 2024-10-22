@@ -1,3 +1,5 @@
+import { rounded } from '@utils/utils';
+
 export interface IStatistic {
   gamesCount: string | null;
   sumScore: string | null;
@@ -25,7 +27,7 @@ export const MyStatisticDtoMapper = (
 
   outputDto.gamesCount = Number(statistic?.gamesCount);
   outputDto.sumScore = Number(statistic?.sumScore);
-  outputDto.avgScores = Number(statistic?.avgScores);
+  outputDto.avgScores = rounded(Number(statistic?.avgScores));
   outputDto.winsCount = Number(statistic?.winsCount);
   outputDto.lossesCount = Number(statistic?.lossesCount);
   outputDto.drawsCount = Number(statistic?.drawsCount);

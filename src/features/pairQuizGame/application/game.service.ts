@@ -143,4 +143,11 @@ export class GameService {
     );
     return MyStatisticDtoMapper(statistics);
   }
+
+  async getAllGames(userId: string) {
+    const game = await this.queryBus.execute<GetCurrentPairGameQuery, Game>(
+      new GetCurrentPairGameQuery(userId),
+    );
+    return ActiveGameDtoMapper(game);
+  }
 }
