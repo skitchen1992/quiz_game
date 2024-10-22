@@ -39,7 +39,7 @@ export class FinishGameHandler implements ICommandHandler<FinishGameCommand> {
       secondPlayerAnswersCount === RANDOM_QUESTIONS_COUNT
     ) {
       //Завершаем игру
-      const finishedGame = await this.gameRepository.finishGame(gameId);
+      await this.gameRepository.finishGame(gameId);
 
       //Достаем все ответы для каждого игрока по player_id отсортированные дате
       const firstPlayerAnswers =
@@ -67,25 +67,27 @@ export class FinishGameHandler implements ICommandHandler<FinishGameCommand> {
         await this.playerRepository.incrementScore(firstResponderPlayerId);
       }
 
+      const finishedGame = await this.gameRepository.getGameById(gameId);
+
       //Определяем статус первого игрока
       const firstPlayerStatus = getPlayerStatus(
-        finishedGame.first_player.score,
-        finishedGame.second_player!.score,
+        finishedGame!.first_player.score,
+        finishedGame!.second_player!.score,
       );
 
       //Определяем статус второго игрока
       const secondPlayerStatus = getPlayerStatus(
-        finishedGame.second_player!.score,
-        finishedGame.first_player.score,
+        finishedGame!.second_player!.score,
+        finishedGame!.first_player.score,
       );
 
       await this.playerRepository.updatePlayerStatus(
-        finishedGame.first_player_id,
+        finishedGame!.first_player_id,
         firstPlayerStatus,
       );
 
       await this.playerRepository.updatePlayerStatus(
-        finishedGame.second_player_id,
+        finishedGame!.second_player_id,
         secondPlayerStatus,
       );
     }
