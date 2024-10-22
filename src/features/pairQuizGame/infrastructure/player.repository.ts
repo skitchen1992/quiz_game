@@ -5,7 +5,7 @@ import {
   Player,
   PlayerStatus,
 } from '@features/pairQuizGame/domain/player.entity';
-import { MyStatisticOutputDto } from '@features/pairQuizGame/api/dto/output/my-statistic.output.dto';
+import { IStatistic } from '@features/pairQuizGame/api/dto/output/my-statistic.output.dto';
 
 @Injectable()
 export class PlayerRepository {
@@ -97,9 +97,9 @@ export class PlayerRepository {
 
   public async getPlayerStatisticsByUserId(
     userId: string,
-  ): Promise<MyStatisticOutputDto> {
+  ): Promise<IStatistic | undefined> {
     try {
-      const rawStats = await this.playerRepository
+      return await this.playerRepository
         .createQueryBuilder('player')
         .select('COUNT(player.id)', 'gamesCount')
         .addSelect('SUM(player.score)', 'sumScore')
@@ -116,22 +116,13 @@ export class PlayerRepository {
           `SUM(CASE WHEN player.status = :drawStatus THEN 1 ELSE 0 END)`,
           'drawsCount',
         )
-        .where('player.user_id = :userId', { userId }) // Фильтрация по user_id
+        .where('player.user_id = :userId', { userId })
         .setParameters({
           winStatus: PlayerStatus.WIN,
           lossStatus: PlayerStatus.LOSS,
           drawStatus: PlayerStatus.DRAW,
         })
         .getRawOne();
-
-      return {
-        gamesCount: Number(rawStats.gamesCount),
-        sumScore: Number(rawStats.sumScore),
-        avgScores: Number(rawStats.avgScores),
-        winsCount: Number(rawStats.winsCount),
-        lossesCount: Number(rawStats.lossesCount),
-        drawsCount: Number(rawStats.drawsCount),
-      };
     } catch (error) {
       console.error('Database query failed while fetching player statistics', {
         error: (error as Error).message,

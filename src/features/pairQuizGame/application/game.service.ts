@@ -22,6 +22,7 @@ import { UpdateScoreCommand } from '@features/pairQuizGame/application/handlers/
 import { FinishGameCommand } from '@features/pairQuizGame/application/handlers/finish-game.handler';
 import { AnswerDtoMapper } from '@features/pairQuizGame/api/dto/output/answer.output.dto';
 import { PlayerRepository } from '@features/pairQuizGame/infrastructure/player.repository';
+import { MyStatisticDtoMapper } from '@features/pairQuizGame/api/dto/output/my-statistic.output.dto';
 
 @Injectable()
 export class GameService {
@@ -137,6 +138,9 @@ export class GameService {
   }
 
   async getStatistic(userId: string) {
-    return await this.playerRepository.getPlayerStatisticsByUserId(userId);
+    const statistics = await this.playerRepository.getPlayerStatisticsByUserId(
+      userId,
+    );
+    return MyStatisticDtoMapper(statistics);
   }
 }
