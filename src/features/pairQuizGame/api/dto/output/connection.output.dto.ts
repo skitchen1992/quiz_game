@@ -61,13 +61,15 @@ export const PendingGameDtoMapper = (
   return outputDto;
 };
 
-export const ActiveGameDtoMapper = (game: Game): ConnectionOutputDto => {
+export const GameDtoMapper = (game: Game): ConnectionOutputDto => {
   const outputDto = new ConnectionOutputDto();
 
   outputDto.id = game.id;
   outputDto.firstPlayerProgress = {
     answers: game.first_player.answers
-      ? game.first_player.answers.map((answer) => AnswerDtoMapper(answer))
+      ? game.first_player.answers
+          // .sort((a, b) => a.created_at.getTime() - b.created_at.getTime())
+          .map((answer) => AnswerDtoMapper(answer))
       : [],
     player: {
       id: game.first_player.user_id,
@@ -77,7 +79,11 @@ export const ActiveGameDtoMapper = (game: Game): ConnectionOutputDto => {
   };
   outputDto.secondPlayerProgress = {
     answers: game.second_player!.answers
-      ? game.second_player!.answers.map((answer) => AnswerDtoMapper(answer))
+      ? game
+          .second_player!.answers // .sort(
+          //     (a, b) => a.created_at.getTime() - b.created_at.getTime(),
+          //   )
+          .map((answer) => AnswerDtoMapper(answer))
       : [],
     player: {
       id: game.second_player!.user_id,

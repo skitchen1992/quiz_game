@@ -8,6 +8,7 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -16,6 +17,8 @@ import { BearerAuthGuard } from '@infrastructure/guards/bearer-auth-guard.servic
 import { Request } from 'express';
 import { AnswerDto } from '@features/pairQuizGame/api/dto/input/create-blog.input.dto';
 import { GameService } from '@features/pairQuizGame/application/game.service';
+import { UsersQuery } from '@features/users/api/dto/output/user.output.pagination.dto';
+import { GameQuery } from '@features/pairQuizGame/api/dto/output/game.output.pagination.dto';
 
 @SkipThrottle()
 @ApiTags('PairQuizGame')
@@ -49,10 +52,10 @@ export class PairQuizGameController {
   @ApiSecurity('bearer')
   @UseGuards(BearerAuthGuard)
   @Get('pairs/my')
-  async myGames(@Req() request: Request) {
+  async myGames(@Req() request: Request, @Query() query: GameQuery) {
     const user = request.currentUser!;
 
-    return this.gameService.getAllGames(user.id);
+    return this.gameService.getAllGames(query, user.id);
   }
 
   @HttpCode(HttpStatus.OK)

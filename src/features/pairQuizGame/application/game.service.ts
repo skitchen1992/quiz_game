@@ -7,7 +7,7 @@ import { CreatePlayerCommand } from '@features/pairQuizGame/application/handlers
 import { Player } from '@features/pairQuizGame/domain/player.entity';
 import { ConnectToPendingGameCommand } from '@features/pairQuizGame/application/handlers/connect-to-panding-game.handler';
 import {
-  ActiveGameDtoMapper,
+  GameDtoMapper,
   PendingGameDtoMapper,
 } from '@features/pairQuizGame/api/dto/output/connection.output.dto';
 import { CreateGameCommand } from '@features/pairQuizGame/application/handlers/create-qame.handler';
@@ -23,6 +23,8 @@ import { FinishGameCommand } from '@features/pairQuizGame/application/handlers/f
 import { AnswerDtoMapper } from '@features/pairQuizGame/api/dto/output/answer.output.dto';
 import { PlayerRepository } from '@features/pairQuizGame/infrastructure/player.repository';
 import { MyStatisticDtoMapper } from '@features/pairQuizGame/api/dto/output/my-statistic.output.dto';
+import { GameQueryRepository } from '@features/pairQuizGame/infrastructure/game.query-repository';
+import { GameQuery } from '@features/pairQuizGame/api/dto/output/game.output.pagination.dto';
 
 @Injectable()
 export class GameService {
@@ -30,6 +32,7 @@ export class GameService {
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
     private readonly playerRepository: PlayerRepository,
+    private readonly gameQueryRepository: GameQueryRepository,
   ) {}
 
   async handleConnection(user: any) {
@@ -56,7 +59,7 @@ export class GameService {
       >(new ConnectToPendingGameCommand(game, player));
 
       // Возвращает информацию об активной игре
-      return ActiveGameDtoMapper(activeGame);
+      return GameDtoMapper(activeGame);
     } else {
       // Если ожидающая игра не найдена, создаёт новую игру
       const game = await this.commandBus.execute<CreateGameCommand, Game>(
@@ -76,7 +79,7 @@ export class GameService {
 
     // Если статус игры не ожидает второго игрока, возвращаем активную игру
     if (game.status !== GameStatus.PENDING_SECOND_PLAYER) {
-      return ActiveGameDtoMapper(game);
+      return GameDtoMapper(game);
     } else {
       // Иначе возвращаем ожидающую игру
       return PendingGameDtoMapper(game, game.first_player);
@@ -130,7 +133,7 @@ export class GameService {
 
     // Если статус игры не ожидает второго игрока, возвращаем активную игру
     if (game.status !== GameStatus.PENDING_SECOND_PLAYER) {
-      return ActiveGameDtoMapper(game);
+      return GameDtoMapper(game);
     } else {
       // Иначе возвращаем ожидающую игру
       return PendingGameDtoMapper(game, game.first_player);
@@ -144,10 +147,7 @@ export class GameService {
     return MyStatisticDtoMapper(statistics);
   }
 
-  async getAllGames(userId: string) {
-    const game = await this.queryBus.execute<GetCurrentPairGameQuery, Game>(
-      new GetCurrentPairGameQuery(userId),
-    );
-    return ActiveGameDtoMapper(game);
+  async getAllGames(query: GameQuery, userId: string) {
+    return await this.gameQueryRepository.getAll(query, userId);
   }
 }
