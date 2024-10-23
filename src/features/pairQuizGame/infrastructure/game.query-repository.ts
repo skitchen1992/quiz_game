@@ -27,8 +27,6 @@ export class GameQueryRepository {
       pageSize = 10,
     } = query;
 
-    console.log('query', query);
-
     const validSortDirections = ['asc', 'desc'];
     const direction = validSortDirections.includes(sortDirection)
       ? sortDirection
@@ -48,27 +46,23 @@ export class GameQueryRepository {
       .leftJoinAndSelect('second_player.answers', 'second_answers')
       .leftJoinAndSelect('game.questions', 'questions')
       .leftJoinAndSelect('questions.question', 'question')
-      .where(
-        'first_player.user_id = :userId OR second_player.user_id = :userId',
-        {
-          userId,
-        },
-      )
-
-      // .orderBy('first_answers.created_at', 'ASC')
-      // .addOrderBy('second_answers.created_at', 'ASC')
-
+      .where('first_player.user_id = :userId ', {
+        userId,
+      })
+      .orWhere('second_player.user_id = :userId', {
+        userId,
+      })
       .addOrderBy('questions.order', 'ASC')
       .addOrderBy(
         `game.${sortField}`,
         direction.toUpperCase() as 'ASC' | 'DESC',
       )
+      .addOrderBy(`game.created_at`, 'DESC')
       .skip((Number(pageNumber) - 1) * Number(pageSize))
       .take(Number(pageSize));
 
     const [games, totalCount] = await queryBuilder.getManyAndCount();
 
-    console.log('games', games.length, 'totalCount', totalCount);
     const gameList = games.map((game) => GameDtoMapper(game));
 
     return GameOutputPaginationDtoMapper(

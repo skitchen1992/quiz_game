@@ -17,7 +17,6 @@ import { BearerAuthGuard } from '@infrastructure/guards/bearer-auth-guard.servic
 import { Request } from 'express';
 import { AnswerDto } from '@features/pairQuizGame/api/dto/input/create-blog.input.dto';
 import { GameService } from '@features/pairQuizGame/application/game.service';
-import { UsersQuery } from '@features/users/api/dto/output/user.output.pagination.dto';
 import { GameQuery } from '@features/pairQuizGame/api/dto/output/game.output.pagination.dto';
 
 @SkipThrottle()

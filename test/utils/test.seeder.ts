@@ -32,9 +32,9 @@ export const testSeeder = {
   createUserListDto(count: number, pass?: string): NewUserDto[] {
     return new Array(count).fill(null).map((item, index) => {
       return {
-        login: `test${index}`,
-        email: `test${index}@gmail.com`,
-        password: pass || `123456789${index}`,
+        login: `login${index}`,
+        email: `login${index}@gmail.com`,
+        password: pass || `password`,
         created_at: new Date(),
       };
     });
@@ -137,8 +137,8 @@ export const testSeeder = {
 
   createQuestionDto(): CreateQuestionInputDto {
     return {
-      body: 'lg-99913123131231',
-      correctAnswers: ['1', '2', '3', '4'],
+      body: 'Create new Question',
+      correctAnswers: ['correct'],
     };
   },
 };

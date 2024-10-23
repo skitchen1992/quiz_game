@@ -63,10 +63,22 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  const tables = ['users', 'posts', 'blogs', 'quiz_questions'];
+  const tables = await dataSource.query(`
+      SELECT table_name
+      FROM information_schema.tables
+      WHERE table_schema = 'public'
+    `);
 
-  for (const table of tables) {
-    await dataSource.query(`TRUNCATE TABLE ${table} RESTART IDENTITY CASCADE`);
+  // Извлекаем имена таблиц
+  const tableNames = tables.map(
+    (table: { table_name: string }) => table.table_name,
+  );
+
+  // Очищаем все таблицы
+  if (tableNames.length > 0) {
+    await dataSource.query(
+      `TRUNCATE TABLE ${tableNames.join(', ')} RESTART IDENTITY CASCADE`,
+    );
   }
 });
 

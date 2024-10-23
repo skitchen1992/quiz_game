@@ -68,7 +68,7 @@ export const GameDtoMapper = (game: Game): ConnectionOutputDto => {
   outputDto.firstPlayerProgress = {
     answers: game.first_player.answers
       ? game.first_player.answers
-          // .sort((a, b) => a.created_at.getTime() - b.created_at.getTime())
+          .sort((a, b) => a.created_at.getTime() - b.created_at.getTime())
           .map((answer) => AnswerDtoMapper(answer))
       : [],
     player: {
@@ -80,9 +80,9 @@ export const GameDtoMapper = (game: Game): ConnectionOutputDto => {
   outputDto.secondPlayerProgress = {
     answers: game.second_player!.answers
       ? game
-          .second_player!.answers // .sort(
-          //     (a, b) => a.created_at.getTime() - b.created_at.getTime(),
-          //   )
+          .second_player!.answers.sort(
+            (a, b) => a.created_at.getTime() - b.created_at.getTime(),
+          )
           .map((answer) => AnswerDtoMapper(answer))
       : [],
     player: {
