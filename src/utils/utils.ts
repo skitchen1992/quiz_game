@@ -2,9 +2,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { PlayerStatus } from '@features/pairQuizGame/domain/player.entity';
 import { Answer } from '@features/pairQuizGame/domain/answer.entity';
 
-export const getUniqueId = () => {
+export function getUniqueId() {
   return uuidv4();
-};
+}
+
+export function rounded(num: string | number) {
+  const value = typeof num === 'string' ? parseFloat(num) : num;
+  return parseFloat(value.toFixed(2));
+}
 
 export function sleep(duration: number): Promise<any> {
   return new Promise((resolve) => {

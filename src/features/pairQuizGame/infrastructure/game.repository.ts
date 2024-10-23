@@ -189,7 +189,7 @@ export class GameRepository {
     }
   }
 
-  public async finishGame(gameId: string): Promise<Game> {
+  public async finishGame(gameId: string) {
     try {
       await this.gameRepository.update(
         { id: gameId },
@@ -199,31 +199,6 @@ export class GameRepository {
           updated_at: new Date(),
         },
       );
-
-      // Получаем завершённую игру с отсортированными ответами
-      const finishedGame = await this.gameRepository
-        .createQueryBuilder('game')
-        .leftJoinAndSelect('game.first_player', 'first_player')
-        .leftJoinAndSelect('game.second_player', 'second_player')
-        .leftJoinAndSelect('first_player.user', 'first_user')
-        .leftJoinAndSelect('second_player.user', 'second_user')
-        .leftJoinAndSelect('first_player.answers', 'first_answers')
-        .leftJoinAndSelect('second_player.answers', 'second_answers')
-        .leftJoinAndSelect('game.questions', 'questions')
-        .leftJoinAndSelect('questions.question', 'question')
-        .where('game.id = :gameId', { gameId })
-        .orderBy('first_answers.created_at', 'ASC')
-        .addOrderBy('second_answers.created_at', 'ASC')
-        .addOrderBy('questions.order', 'ASC')
-        .getOne();
-
-      if (!finishedGame) {
-        throw new InternalServerErrorException(
-          'Could not retrieve finished game',
-        );
-      }
-
-      return finishedGame;
     } catch (error) {
       console.error('Error finishing game', {
         error: (error as Error).message,
