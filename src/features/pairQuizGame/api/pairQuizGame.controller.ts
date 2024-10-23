@@ -35,7 +35,7 @@ export class PairQuizGameController {
   async connection(@Req() request: Request) {
     const user = request.currentUser!;
 
-    return this.gameService.handleConnection(user);
+    return this.gameService.handleConnection(user.id);
   }
 
   @HttpCode(HttpStatus.OK)

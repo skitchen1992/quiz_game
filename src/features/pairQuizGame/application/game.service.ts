@@ -35,20 +35,20 @@ export class GameService {
     private readonly gameQueryRepository: GameQueryRepository,
   ) {}
 
-  async handleConnection(user: any) {
+  async handleConnection(userId: string) {
     // Проверяет участие пользователя в игре
     await this.commandBus.execute<CheckUserParticipationInGameCommand>(
-      new CheckUserParticipationInGameCommand(user.id),
+      new CheckUserParticipationInGameCommand(userId),
     );
 
     // Запрашивает информацию о текущей ожидающей игре для пользователя
     const game = await this.queryBus.execute<GetPendingGameQuery, Game | null>(
-      new GetPendingGameQuery(user),
+      new GetPendingGameQuery(userId),
     );
 
     // Создает игрока в системе на основе текущего пользователя
     const player = await this.commandBus.execute<CreatePlayerCommand, Player>(
-      new CreatePlayerCommand(user.id),
+      new CreatePlayerCommand(userId),
     );
 
     if (game) {
