@@ -12,7 +12,7 @@ import {
 } from '@features/pairQuizGame/api/dto/output/connection.output.dto';
 import { CreateGameCommand } from '@features/pairQuizGame/application/handlers/create-qame.handler';
 import { GetCurrentPairGameByIdQuery } from '@features/pairQuizGame/application/handlers/get-current-pair-qame-by-id.handler';
-import { AnswerDto } from '@features/pairQuizGame/api/dto/input/create-blog.input.dto';
+import { AnswerDto } from '@features/pairQuizGame/api/dto/input/answer.input.dto';
 import { GetPlayerQuery } from '@features/pairQuizGame/application/handlers/get-player.handler';
 import { GetAnswersCountQuery } from '@features/pairQuizGame/application/handlers/get-answers-count.handler';
 import { GetCurrentPairGameQuery } from '@features/pairQuizGame/application/handlers/get-current-pair-qame.handler';
@@ -25,6 +25,8 @@ import { PlayerRepository } from '@features/pairQuizGame/infrastructure/player.r
 import { MyStatisticDtoMapper } from '@features/pairQuizGame/api/dto/output/my-statistic.output.dto';
 import { GameQueryRepository } from '@features/pairQuizGame/infrastructure/game.query-repository';
 import { GameQuery } from '@features/pairQuizGame/api/dto/output/game.output.pagination.dto';
+import { TopQueryDto } from '@features/pairQuizGame/api/dto/input/top.input.dto';
+import { PlayerQueryRepository } from '@features/pairQuizGame/infrastructure/player.query-repository';
 
 @Injectable()
 export class GameService {
@@ -32,6 +34,7 @@ export class GameService {
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
     private readonly playerRepository: PlayerRepository,
+    private readonly playerQueryRepository: PlayerQueryRepository,
     private readonly gameQueryRepository: GameQueryRepository,
   ) {}
 
@@ -149,5 +152,8 @@ export class GameService {
 
   async getAllGames(query: GameQuery, userId: string) {
     return await this.gameQueryRepository.getAll(query, userId);
+  }
+  async getTop(query: TopQueryDto) {
+    return await this.playerQueryRepository.getTop(query);
   }
 }
