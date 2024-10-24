@@ -81,10 +81,8 @@ export class PlayerQueryRepository {
         );
       });
 
-      //const totalCount = await queryBuilder.getCount(); // Для пагинации
-
       const topStatistic: ITopStatistic[] = await queryBuilder
-        .limit(pageSizeSafe) // Альтернатива .take(pageSizeSafe)
+        .limit(pageSizeSafe)
         .offset((pageNumberSafe - 1) * pageSizeSafe)
         .getRawMany();
 
