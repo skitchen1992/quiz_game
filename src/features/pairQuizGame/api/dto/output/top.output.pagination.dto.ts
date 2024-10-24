@@ -40,12 +40,12 @@ export const TopStatisticDtoMapper = (
 ): TopStatisticOutputDto => {
   const outputDto = new TopStatisticOutputDto();
 
-  outputDto.sumScore = Number(top.sumScore);
-  outputDto.avgScores = rounded(Number(top?.avgScores));
   outputDto.gamesCount = Number(top.gamesCount);
   outputDto.winsCount = Number(top.winsCount);
   outputDto.lossesCount = Number(top.lossesCount);
   outputDto.drawsCount = Number(top.drawsCount);
+  outputDto.sumScore = Number(top.sumScore);
+  outputDto.avgScores = rounded(Number(top?.avgScores));
   outputDto.player = {
     id: top.userId,
     login: top.userLogin,

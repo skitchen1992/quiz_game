@@ -102,6 +102,21 @@ export class PlayerQueryRepository {
       const pageNumberSafe = Math.max(1, Number(pageNumber));
       const pageSizeSafe = Math.max(1, Number(pageSize));
 
+      // 1. Запрос для подсчета уникальных пользователей (user.id)
+      const totalCountQueryBuilder = this.playerRepository
+        .createQueryBuilder('player')
+        .leftJoin('player.user', 'user')
+        .select('COUNT(DISTINCT user.id)', 'totalCount')
+        .setParameters({
+          winStatus: PlayerStatus.WIN,
+          lossStatus: PlayerStatus.LOSS,
+          drawStatus: PlayerStatus.DRAW,
+        });
+
+      const totalCountResult = await totalCountQueryBuilder.getRawOne();
+      const totalCount = parseInt(totalCountResult.totalCount, 10);
+
+      // 2. Основной запрос для получения данных с пагинацией
       const queryBuilder = this.playerRepository
         .createQueryBuilder('player')
         .leftJoinAndSelect('player.user', 'user')
@@ -138,7 +153,7 @@ export class PlayerQueryRepository {
         );
       });
 
-      const total = await queryBuilder.getCount(); // Для пагинации
+      //const totalCount = await queryBuilder.getCount(); // Для пагинации
 
       const topStatistic: ITopStatistic[] = await queryBuilder
         .limit(pageSizeSafe) // Альтернатива .take(pageSizeSafe)
@@ -151,7 +166,7 @@ export class PlayerQueryRepository {
 
       return TopOutputPaginationDtoMapper(
         topStatisticList,
-        total, // Общее количество игроков для пагинации
+        totalCount,
         pageSizeSafe,
         pageNumberSafe,
       );
@@ -180,7 +195,7 @@ const a = {
       drawsCount: 1,
       sumScore: 20,
       avgScores: 2.22,
-      player: { id: '48ec39c7-5724-4133-a3a1-344d555b89c9', login: '5546lg' },
+      player: { id: '0e2db46f-53f5-4eb0-99a9-d33a92b300c5', login: '8783lg' },
     },
     {
       gamesCount: 3,
@@ -189,7 +204,7 @@ const a = {
       drawsCount: 0,
       sumScore: 13,
       avgScores: 4.33,
-      player: { id: '4a69455b-c43e-4482-b70a-fef86be4101b', login: '5550lg' },
+      player: { id: '04dc8022-c5f9-4581-ba11-a6581f92ca7f', login: '8787lg' },
     },
     {
       gamesCount: 6,
@@ -198,7 +213,7 @@ const a = {
       drawsCount: 0,
       sumScore: 13,
       avgScores: 2.17,
-      player: { id: 'f6a2a104-782b-434c-9a62-d594d80fd48f', login: '5547lg' },
+      player: { id: '7afe0397-8782-41b0-a25e-2eb6175c79c1', login: '8784lg' },
     },
   ],
 };
