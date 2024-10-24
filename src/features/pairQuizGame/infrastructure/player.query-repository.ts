@@ -138,20 +138,20 @@ export class PlayerQueryRepository {
         );
       });
 
-      const totalPlayers = await queryBuilder.getCount(); // Для пагинации
+      const total = await queryBuilder.getCount(); // Для пагинации
 
       const topStatistic: ITopStatistic[] = await queryBuilder
         .limit(pageSizeSafe) // Альтернатива .take(pageSizeSafe)
         .offset((pageNumberSafe - 1) * pageSizeSafe)
         .getRawMany();
 
-      const playerList = topStatistic.map((player) =>
+      const topStatisticList = topStatistic.map((player) =>
         TopStatisticDtoMapper(player),
       );
 
       return TopOutputPaginationDtoMapper(
-        playerList,
-        totalPlayers, // Общее количество игроков для пагинации
+        topStatisticList,
+        total, // Общее количество игроков для пагинации
         pageSizeSafe,
         pageNumberSafe,
       );
