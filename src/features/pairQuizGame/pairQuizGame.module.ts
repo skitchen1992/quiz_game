@@ -26,6 +26,7 @@ import { UpdateScoreHandler } from '@features/pairQuizGame/application/handlers/
 import { FinishGameHandler } from '@features/pairQuizGame/application/handlers/finish-game.handler';
 import { GameService } from '@features/pairQuizGame/application/game.service';
 import { GameQueryRepository } from '@features/pairQuizGame/infrastructure/game.query-repository';
+import { PlayerQueryRepository } from '@features/pairQuizGame/infrastructure/player.query-repository';
 
 const handlers: Provider[] = [
   GetPendingGameHandler,
@@ -45,6 +46,7 @@ const handlers: Provider[] = [
 
 const repositories: Provider[] = [
   PlayerRepository,
+  PlayerQueryRepository,
   GameRepository,
   GameQueryRepository,
   QuestionOfGameRepository,
