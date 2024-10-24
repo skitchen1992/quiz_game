@@ -76,39 +76,3 @@ export class BlogsQueryRepository {
     );
   }
 }
-
-const b = {
-  pagesCount: 9,
-  page: 1,
-  pageSize: 3,
-  totalCount: 26,
-  items: [
-    {
-      gamesCount: 9,
-      winsCount: 4,
-      lossesCount: 4,
-      drawsCount: 1,
-      sumScore: 20,
-      avgScores: 2.22,
-      player: { id: '0f51667a-3852-4314-b543-057ca47bde18', login: '9024lg' },
-    },
-    {
-      gamesCount: 3,
-      winsCount: 3,
-      lossesCount: 0,
-      drawsCount: 0,
-      sumScore: 13,
-      avgScores: 4.33,
-      player: { id: 'dbbc6f20-83f9-4ef2-bc4e-4c280ee5c1b8', login: '9028lg' },
-    },
-    {
-      gamesCount: 6,
-      winsCount: 3,
-      lossesCount: 3,
-      drawsCount: 0,
-      sumScore: 13,
-      avgScores: 2.17,
-      player: { id: '522a706b-1fd3-470e-95fe-c3649f20df49', login: '9025lg' },
-    },
-  ],
-};
