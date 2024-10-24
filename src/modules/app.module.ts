@@ -21,10 +21,12 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { QuizQuestionsModule } from '@features/quizQuestions/quizQuestions.module';
 import { PairQuizModule } from '@features/pairQuizGame/pairQuizGame.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   // Регистрация модулей
   imports: [
+    ScheduleModule.forRoot(),
     CqrsModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,

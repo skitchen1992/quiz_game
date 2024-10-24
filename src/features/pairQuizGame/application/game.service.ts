@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CheckUserParticipationInGameCommand } from '@features/pairQuizGame/application/handlers/check-user-participation-in-game.handler';
 import { GetPendingGameQuery } from '@features/pairQuizGame/application/handlers/get-qame.handler';
@@ -27,9 +27,12 @@ import { GameQueryRepository } from '@features/pairQuizGame/infrastructure/game.
 import { GameQuery } from '@features/pairQuizGame/api/dto/output/game.output.pagination.dto';
 import { TopQueryDto } from '@features/pairQuizGame/api/dto/input/top.input.dto';
 import { PlayerQueryRepository } from '@features/pairQuizGame/infrastructure/player.query-repository';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class GameService {
+  private readonly logger = new Logger(GameService.name);
+
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
@@ -89,12 +92,12 @@ export class GameService {
     }
   }
 
-  async handlePlayerAnswer(user: any, input: AnswerDto) {
+  async handlePlayerAnswer(userId: string, input: AnswerDto) {
     const { answer } = input;
 
     // Запрашивает информацию о текущем пользователе в паре
     const player = await this.queryBus.execute<GetPlayerQuery, Player>(
-      new GetPlayerQuery(user.id),
+      new GetPlayerQuery(userId),
     );
 
     // Запрашивает информацию о количестве ответов
@@ -105,7 +108,7 @@ export class GameService {
 
     // Запрашивает информацию о текущей активной парной игре для пользователя
     const game = await this.queryBus.execute<GetCurrentPairGameQuery, Game>(
-      new GetCurrentPairGameQuery(user.id),
+      new GetCurrentPairGameQuery(userId),
     );
 
     // Отвечаем на вопрос
@@ -126,6 +129,11 @@ export class GameService {
 
     // Возвращает результат ответа
     return AnswerDtoMapper(answerResult);
+  }
+
+  @Cron(CronExpression.EVERY_10_SECONDS)
+  handleCron() {
+    this.logger.debug('Called when the current second is 45');
   }
 
   async getCurrentGame(userId: string) {

@@ -76,7 +76,7 @@ export class PairQuizGameController {
   async answers(@Req() request: Request, @Body() input: AnswerDto) {
     const user = request.currentUser!;
 
-    return this.gameService.handlePlayerAnswer(user, input);
+    return this.gameService.handlePlayerAnswer(user.id, input);
   }
 
   @HttpCode(HttpStatus.OK)
