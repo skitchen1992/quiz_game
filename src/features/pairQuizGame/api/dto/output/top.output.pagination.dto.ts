@@ -1,19 +1,11 @@
 import { getPageCount } from '@utils/pagination';
-import { IsIn, IsInt, IsOptional, IsString, Min } from 'class-validator';
-import { Type } from 'class-transformer';
-import { ConnectionOutputDto } from '@features/pairQuizGame/api/dto/output/connection.output.dto';
 import { rounded } from '@utils/utils';
-import {
-  IStatistic,
-  MyStatisticOutputDto,
-} from '@features/pairQuizGame/api/dto/output/my-statistic.output.dto';
-import { Player } from '@features/pairQuizGame/domain/player.entity';
 
 interface IPlayer {
   id: string;
   login: string;
 }
-export interface ITop {
+export interface ITopStatistic {
   gamesCount: string | null;
   sumScore: string | null;
   avgScores: string | null;
@@ -43,16 +35,10 @@ export class TopOutputPaginationDto {
 
 // MAPPERS
 
-export const TopStatisticDtoMapper = (top: ITop): TopStatisticOutputDto => {
+export const TopStatisticDtoMapper = (
+  top: ITopStatistic,
+): TopStatisticOutputDto => {
   const outputDto = new TopStatisticOutputDto();
-
-  // outputDto.gamesCount = Number(statistic?.gamesCount);
-  // outputDto.sumScore = Number(statistic?.sumScore);
-  // outputDto.avgScores = rounded(Number(statistic?.avgScores));
-  // outputDto.winsCount = Number(statistic?.winsCount);
-  // outputDto.lossesCount = Number(statistic?.lossesCount);
-  // outputDto.drawsCount = Number(statistic?.drawsCount);
-  // outputDto.player = { id: '1', login: 'login' };
 
   outputDto.sumScore = Number(top.sumScore);
   outputDto.avgScores = rounded(Number(top?.avgScores));

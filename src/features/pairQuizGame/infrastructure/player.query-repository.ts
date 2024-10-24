@@ -10,7 +10,7 @@ import { TopQueryDto } from '@features/pairQuizGame/api/dto/input/top.input.dto'
 import { GameDtoMapper } from '@features/pairQuizGame/api/dto/output/connection.output.dto';
 import { GameOutputPaginationDtoMapper } from '@features/pairQuizGame/api/dto/output/game.output.pagination.dto';
 import {
-  ITop,
+  ITopStatistic,
   TopOutputPaginationDtoMapper,
   TopStatisticDtoMapper,
 } from '@features/pairQuizGame/api/dto/output/top.output.pagination.dto';
@@ -139,13 +139,15 @@ export class PlayerQueryRepository {
       });
 
       const totalPlayers = await queryBuilder.getCount(); // Для пагинации
-      console.log('pageSizeSafe', pageSizeSafe);
-      const players: ITop[] = await queryBuilder
-        .skip((pageNumberSafe - 1) * pageSizeSafe)
-        .take(pageSizeSafe)
+
+      const topStatistic: ITopStatistic[] = await queryBuilder
+        .limit(pageSizeSafe) // Альтернатива .take(pageSizeSafe)
+        .offset((pageNumberSafe - 1) * pageSizeSafe)
         .getRawMany();
 
-      const playerList = players.map((player) => TopStatisticDtoMapper(player));
+      const playerList = topStatistic.map((player) =>
+        TopStatisticDtoMapper(player),
+      );
 
       return TopOutputPaginationDtoMapper(
         playerList,
@@ -164,3 +166,39 @@ export class PlayerQueryRepository {
     }
   }
 }
+
+const a = {
+  pagesCount: 2,
+  page: 1,
+  pageSize: 3,
+  totalCount: 5,
+  items: [
+    {
+      gamesCount: 9,
+      winsCount: 4,
+      lossesCount: 4,
+      drawsCount: 1,
+      sumScore: 20,
+      avgScores: 2.22,
+      player: { id: '48ec39c7-5724-4133-a3a1-344d555b89c9', login: '5546lg' },
+    },
+    {
+      gamesCount: 3,
+      winsCount: 3,
+      lossesCount: 0,
+      drawsCount: 0,
+      sumScore: 13,
+      avgScores: 4.33,
+      player: { id: '4a69455b-c43e-4482-b70a-fef86be4101b', login: '5550lg' },
+    },
+    {
+      gamesCount: 6,
+      winsCount: 3,
+      lossesCount: 3,
+      drawsCount: 0,
+      sumScore: 13,
+      avgScores: 2.17,
+      player: { id: 'f6a2a104-782b-434c-9a62-d594d80fd48f', login: '5547lg' },
+    },
+  ],
+};
