@@ -89,12 +89,12 @@ export class GameService {
     }
   }
 
-  async handlePlayerAnswer(user: any, input: AnswerDto) {
+  async handlePlayerAnswer(userId: string, input: AnswerDto) {
     const { answer } = input;
 
     // Запрашивает информацию о текущем пользователе в паре
     const player = await this.queryBus.execute<GetPlayerQuery, Player>(
-      new GetPlayerQuery(user.id),
+      new GetPlayerQuery(userId),
     );
 
     // Запрашивает информацию о количестве ответов
@@ -105,7 +105,7 @@ export class GameService {
 
     // Запрашивает информацию о текущей активной парной игре для пользователя
     const game = await this.queryBus.execute<GetCurrentPairGameQuery, Game>(
-      new GetCurrentPairGameQuery(user.id),
+      new GetCurrentPairGameQuery(userId),
     );
 
     // Отвечаем на вопрос
@@ -153,6 +153,7 @@ export class GameService {
   async getAllGames(query: GameQuery, userId: string) {
     return await this.gameQueryRepository.getAll(query, userId);
   }
+
   async getTop(query: TopQueryDto) {
     return await this.playerQueryRepository.getTop(query);
   }

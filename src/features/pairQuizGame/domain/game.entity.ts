@@ -53,6 +53,12 @@ export class Game {
   })
   finished_at: Date | null;
 
+  @Column({
+    type: 'timestamptz',
+    nullable: true,
+  })
+  pending_completion_at: Date | null;
+
   @Column({ type: 'uuid', nullable: false })
   first_player_id: string;
 

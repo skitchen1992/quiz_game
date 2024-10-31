@@ -52,6 +52,19 @@ export class PlayerRepository {
     }
   }
 
+  public async getPlayerById(playerId: string): Promise<Player | null> {
+    try {
+      return this.playerRepository.findOne({
+        where: { id: playerId },
+      });
+    } catch (error) {
+      console.error('Error finding player', {
+        error: (error as Error).message,
+      });
+      throw new InternalServerErrorException('Could not find player');
+    }
+  }
+
   public async incrementScore(playerId: string): Promise<Player> {
     try {
       const player = await this.playerRepository.findOneOrFail({
