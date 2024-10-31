@@ -155,45 +155,48 @@ describe(`Finish game after 10 sec.`, () => {
 
     const tokenList: LoginOutputDto[] = readFileSync(TOKEN_PATH);
 
-    for (let i = 0; i < 4; i++) {
-      await request(app.getHttpServer())
-        .post(`${APP_PREFIX}/pair-game-quiz/pairs/connection`)
-        .set(createBearerAuthorizationHeader(tokenList[0].accessToken))
-        .expect(HttpStatus.OK);
+    await request(app.getHttpServer())
+      .post(`${APP_PREFIX}/pair-game-quiz/pairs/connection`)
+      .set(createBearerAuthorizationHeader(tokenList[0].accessToken))
+      .expect(HttpStatus.OK);
 
+    const { body: game } = await request(app.getHttpServer())
+      .post(`${APP_PREFIX}/pair-game-quiz/pairs/connection`)
+      .set(createBearerAuthorizationHeader(tokenList[1].accessToken))
+      .expect(HttpStatus.OK);
+
+    for (const answer of dataSet3AnswersCorrect) {
       await request(app.getHttpServer())
-        .post(`${APP_PREFIX}/pair-game-quiz/pairs/connection`)
+        .post(`${APP_PREFIX}/pair-game-quiz/pairs/my-current/answers`)
         .set(createBearerAuthorizationHeader(tokenList[1].accessToken))
+        .send({
+          answer: answer.answer,
+        })
         .expect(HttpStatus.OK);
-
-      for (const answer of dataSetAllAnswersCorrect) {
-        await request(app.getHttpServer())
-          .post(`${APP_PREFIX}/pair-game-quiz/pairs/my-current/answers`)
-          .set(createBearerAuthorizationHeader(tokenList[0].accessToken))
-          .send({
-            answer: answer.answer,
-          })
-          .expect(HttpStatus.OK);
-      }
-
-      for (const answer of dataSet3AnswersCorrect) {
-        await request(app.getHttpServer())
-          .post(`${APP_PREFIX}/pair-game-quiz/pairs/my-current/answers`)
-          .set(createBearerAuthorizationHeader(tokenList[1].accessToken))
-          .send({
-            answer: answer.answer,
-          })
-          .expect(HttpStatus.OK);
-      }
-
-      await sleep(10000);
-
-      const response = await request(app.getHttpServer())
-        .get(`${APP_PREFIX}/pair-game-quiz/pairs/my-current`)
-        .set(createBearerAuthorizationHeader(tokenList[0].accessToken))
-        .expect(HttpStatus.OK);
-
-      expect(response.body.firstPlayerProgress.score).toBe(6);
     }
+
+    for (const answer of dataSetAllAnswersCorrect) {
+      await request(app.getHttpServer())
+        .post(`${APP_PREFIX}/pair-game-quiz/pairs/my-current/answers`)
+        .set(createBearerAuthorizationHeader(tokenList[0].accessToken))
+        .send({
+          answer: answer.answer,
+        })
+        .expect(HttpStatus.OK);
+    }
+
+    await sleep(10000);
+
+    await request(app.getHttpServer())
+      .get(`${APP_PREFIX}/pair-game-quiz/pairs/my-current`)
+      .set(createBearerAuthorizationHeader(tokenList[0].accessToken))
+      .expect(HttpStatus.NOT_FOUND);
+
+    const response = await request(app.getHttpServer())
+      .get(`${APP_PREFIX}/pair-game-quiz/pairs/${game.id}`)
+      .set(createBearerAuthorizationHeader(tokenList[0].accessToken))
+      .expect(HttpStatus.OK);
+
+    expect(response.body.firstPlayerProgress.score).toBe(6);
   });
 });

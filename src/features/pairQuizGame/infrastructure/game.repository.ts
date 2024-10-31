@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Not, Repository } from 'typeorm';
 import { Game, GameStatus } from '@features/pairQuizGame/domain/game.entity';
 import { Player } from '@features/pairQuizGame/domain/player.entity';
-import { RANDOM_QUESTIONS_COUNT } from '@utils/consts';
 
 @Injectable()
 export class GameRepository {

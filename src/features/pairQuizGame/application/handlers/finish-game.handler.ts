@@ -3,8 +3,7 @@ import { PlayerRepository } from '@features/pairQuizGame/infrastructure/player.r
 import { GameRepository } from '@features/pairQuizGame/infrastructure/game.repository';
 import { AnswerRepository } from '@features/pairQuizGame/infrastructure/answer.repository';
 import { ANSWER_TIMEOUT_MS, RANDOM_QUESTIONS_COUNT } from '@utils/consts';
-import { Cron, CronExpression, SchedulerRegistry } from '@nestjs/schedule';
-import { Logger } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Answer } from '@features/pairQuizGame/domain/answer.entity';
 import { PlayerStatus } from '@features/pairQuizGame/domain/player.entity';
 
@@ -14,21 +13,18 @@ export class FinishGameCommand {
 
 @CommandHandler(FinishGameCommand)
 export class FinishGameHandler implements ICommandHandler<FinishGameCommand> {
-  private readonly logger = new Logger(FinishGameHandler.name);
-
   constructor(
     private readonly gameRepository: GameRepository,
     private readonly playerRepository: PlayerRepository,
     private readonly answerRepository: AnswerRepository,
-    private readonly schedulerRegistry: SchedulerRegistry,
   ) {}
 
   private async getFirstResponderPlayerId(
     firstPlayerAnswers: Answer[],
     secondPlayerAnswers: Answer[],
   ) {
-    const firstPlayerLastAnswerDate = firstPlayerAnswers.at(-1);
-    const secondPlayerLastAnswerDate = secondPlayerAnswers.at(-1);
+    const firstPlayerLastAnswerDate = firstPlayerAnswers[4];
+    const secondPlayerLastAnswerDate = secondPlayerAnswers[4];
 
     if (firstPlayerLastAnswerDate && secondPlayerLastAnswerDate) {
       return firstPlayerLastAnswerDate.created_at <
