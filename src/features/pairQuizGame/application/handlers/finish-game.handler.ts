@@ -23,8 +23,10 @@ export class FinishGameHandler implements ICommandHandler<FinishGameCommand> {
     firstPlayerAnswers: Answer[],
     secondPlayerAnswers: Answer[],
   ) {
-    const firstPlayerLastAnswerDate = firstPlayerAnswers[4];
-    const secondPlayerLastAnswerDate = secondPlayerAnswers[4];
+    const firstPlayerLastAnswerDate =
+      firstPlayerAnswers[RANDOM_QUESTIONS_COUNT - 1];
+    const secondPlayerLastAnswerDate =
+      secondPlayerAnswers[RANDOM_QUESTIONS_COUNT - 1];
 
     if (firstPlayerLastAnswerDate && secondPlayerLastAnswerDate) {
       return firstPlayerLastAnswerDate.created_at <
