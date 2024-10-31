@@ -1,8 +1,9 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import { Game, GameStatus } from '@features/pairQuizGame/domain/game.entity';
 import { Player } from '@features/pairQuizGame/domain/player.entity';
+import { RANDOM_QUESTIONS_COUNT } from '@utils/consts';
 
 @Injectable()
 export class GameRepository {
@@ -21,6 +22,44 @@ export class GameRepository {
         error: (error as Error).message,
       });
       throw new InternalServerErrorException('Could not fetch game by userId');
+    }
+  }
+
+  public async getGameWithPendingCompletionDate(
+    gameId: string,
+  ): Promise<Game | null> {
+    try {
+      return await this.gameRepository.findOne({
+        where: {
+          id: gameId,
+          pending_completion_at: Not(IsNull()),
+        },
+      });
+    } catch (error) {
+      console.error('Error fetching game with pending completion date', {
+        error: (error as Error).message,
+      });
+      throw new InternalServerErrorException(
+        'Could not fetch game with pending completion date',
+      );
+    }
+  }
+
+  public async getGameListWithPendingCompletionDate(): Promise<Game[]> {
+    try {
+      return await this.gameRepository.find({
+        where: {
+          pending_completion_at: Not(IsNull()),
+          status: GameStatus.ACTIVE,
+        },
+      });
+    } catch (error) {
+      console.error('Error fetching game with pending completion date', {
+        error: (error as Error).message,
+      });
+      throw new InternalServerErrorException(
+        'Could not fetch game with pending completion date',
+      );
     }
   }
 
@@ -204,6 +243,30 @@ export class GameRepository {
         error: (error as Error).message,
       });
       throw new InternalServerErrorException('Could not finish game');
+    }
+  }
+
+  public async setPendingCompletionAt(gameId: string): Promise<void> {
+    try {
+      const currentDate = new Date();
+
+      await this.gameRepository.update(
+        { id: gameId },
+        {
+          updated_at: currentDate,
+          pending_completion_at: currentDate,
+        },
+      );
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      console.error('Failed to set pending completion date for game', {
+        gameId,
+        error: errorMessage,
+      });
+
+      throw new InternalServerErrorException(
+        'Failed to set pending completion date.',
+      );
     }
   }
 }

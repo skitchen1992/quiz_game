@@ -42,3 +42,33 @@ export const dataSetAnswers = [
     answer: 'incorrect',
   },
 ];
+
+export const dataSetAllAnswersCorrect = [
+  {
+    answer: 'correct',
+  },
+  {
+    answer: 'correct',
+  },
+  {
+    answer: 'correct',
+  },
+  {
+    answer: 'correct',
+  },
+  {
+    answer: 'correct',
+  },
+];
+
+export const dataSet3AnswersCorrect = [
+  {
+    answer: 'correct',
+  },
+  {
+    answer: 'correct',
+  },
+  {
+    answer: 'correct',
+  },
+];

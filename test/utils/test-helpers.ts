@@ -65,3 +65,13 @@ export const addDataToFile = (
   // Записываем обновленные данные обратно в файл
   writeFileSync(filePath, existingData);
 };
+
+export const clearFile = (filePath: string) => {
+  try {
+    // Перезаписываем файл пустым массивом, указывая флаг 'w' для записи
+    fs.writeFileSync(filePath, JSON.stringify([], null, 2), { flag: 'w' });
+    console.log(`Файл ${filePath} успешно очищен.`);
+  } catch (error) {
+    console.error('Ошибка при очистке файла:', error);
+  }
+};

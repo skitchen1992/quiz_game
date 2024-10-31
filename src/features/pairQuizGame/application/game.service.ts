@@ -27,7 +27,6 @@ import { GameQueryRepository } from '@features/pairQuizGame/infrastructure/game.
 import { GameQuery } from '@features/pairQuizGame/api/dto/output/game.output.pagination.dto';
 import { TopQueryDto } from '@features/pairQuizGame/api/dto/input/top.input.dto';
 import { PlayerQueryRepository } from '@features/pairQuizGame/infrastructure/player.query-repository';
-import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class GameService {
@@ -131,11 +130,6 @@ export class GameService {
     return AnswerDtoMapper(answerResult);
   }
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
-  handleCron() {
-    this.logger.debug('Called when the current second is 45');
-  }
-
   async getCurrentGame(userId: string) {
     // Запрашивает информацию о текущей активной игре для пользователя
     const game = await this.queryBus.execute<GetCurrentPairGameQuery, Game>(
@@ -161,6 +155,7 @@ export class GameService {
   async getAllGames(query: GameQuery, userId: string) {
     return await this.gameQueryRepository.getAll(query, userId);
   }
+
   async getTop(query: TopQueryDto) {
     return await this.playerQueryRepository.getTop(query);
   }

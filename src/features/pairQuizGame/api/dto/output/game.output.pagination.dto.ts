@@ -4,13 +4,6 @@ import { Type } from 'class-transformer';
 import { ConnectionOutputDto } from '@features/pairQuizGame/api/dto/output/connection.output.dto';
 
 export class GameQuery {
-  // /**
-  //  * Search term for user Login: Login should contain this term in any position
-  //  * Default value : null
-  //  */
-  // @IsOptional()
-  // @IsString()
-  // searchLoginTerm?: string;
   /**
    * Default value : createdAt
    */
